@@ -1,26 +1,18 @@
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 
 // 设置start.sh的权限为755
-exec('chmod 755 start.sh', (error, stdout, stderr) => {
-  if (error) {
-    console.error(`Error setting permissions: ${error}`);
+const chmodProcess = spawn('chmod', ['755', 'start.sh']);
+
+chmodProcess.on('close', (chmodCode) => {
+  if (chmodCode !== 0) {
+    console.error(`Error setting permissions: chmod exited with code ${chmodCode}`);
     return;
   }
 
   console.log('start.sh permissions set to 755.');
 
-  // 监听start.sh的执行过程
-  const startScript = exec('./start.sh');
+  // 使用spawn执行start.sh，并将其输出连接到父进程的标准输入输出
+  const startScript = spawn('./start.sh', { stdio: 'inherit' });
 
-  startScript.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
-
-  startScript.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-  });
-
-  startScript.on('close', (code) => {
-    console.log(`命令执行完成，退出码: ${code}`);
-  });
+  console.log('App is running...');
 });
