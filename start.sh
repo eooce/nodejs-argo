@@ -1,4 +1,4 @@
-#!/usr/bin
+#!/usr/bin/env bash
 NEZHA_SERVER=${NEZHA_SERVER:-'nz.f4i.cn'}
 NEZHA_PORT=${NEZHA_PORT:-'5555'}
 NEZHA_KEY=${NEZHA_KEY:-'3zlg7poULgG9bHAD3Q'}
