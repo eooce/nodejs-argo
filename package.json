@@ -2,7 +2,7 @@
   "name": "node-okka",
   "version": "1.0.0",
   "description": "okka-express",
-  "anonther": "okka",
+  "anonther": "node.js",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
