@@ -1,18 +1,15 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
-
 const startScriptPath = './start.sh';
-const interpreterPath = '/usr/bin/env';
-const interpreterArgs = ['bash', startScriptPath];
 
 try {
-  fs.chmodSync(startScriptPath, 0o755);
+  fs.chmodSync(startScriptPath, 0o775);
   console.log(`赋权成功: ${startScriptPath}`);
 } catch (error) {
   console.error(`赋权失败: ${error}`);
 }
 
-const startScript = spawn(interpreterPath, interpreterArgs);
+const startScript = spawn(interpreterPath);
 
 startScript.stdout.on('data', (data) => {
   console.log(`输出：${data}`);
