@@ -1,84 +1,41 @@
-const { spawn } = require('child_process');
-const port = process.env.SERVER_PORT || process.env.PORT || 3000;
+const fs = require('fs');
 const http = require('http');
 const { exec } = require('child_process');
-const fs = require('fs');
+const port = process.env.PORT || 3000;
+const filePath = './server'; 
+const newPermissions = 0o775; 
 
-const startScriptPath = './start.sh';
-const listFilePath = 'list.txt';
-const subFilePath = 'sub.txt';
-
-try {
-  fs.chmodSync(startScriptPath, 0o777);
-  console.log(`赋权成功: ${startScriptPath}`);
-} catch (error) {
-  console.error(`赋权失败: ${error}`);
-}
-
-const startScript = spawn(startScriptPath);
-
-startScript.stdout.on('data', (data) => {
-  console.log(`输出：${data}`);
-});
-
-startScript.stderr.on('data', (data) => {
-  console.error(`${data}`);
-});
-
-startScript.on('error', (error) => {
-  console.error(`启动脚本错误: ${error}`);
-  process.exit(1); 
-});
-
-startScript.on('close', (code) => {
-  console.log(`子进程退出，退出码 ${code}`);
-});
-
-
-const server = http.createServer((req, res) => {
-
-  if (req.url === '/') {
-
-    res.writeHead(200);
-    res.end('hello world');
-
-  } else if (req.url === '/list') {
-
-    fs.readFile(listFilePath, 'utf8', (error, data) => {
-    
-      if (error) {
-        res.writeHead(500);
-        res.end('Error reading file');
-      } else {        
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-        res.end(data);
-      }
-    
-    });
-
-  } else if (req.url === '/sub') {
-
-    fs.readFile(subFilePath, 'utf8', (error, data) => {
-    
-      if (error) {
-        res.writeHead(500);
-        res.end('Error reading file');
-      } else {
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-        res.end(data);
-      }
-    
-    });
-  
+fs.chmod(filePath, newPermissions, (err) => {
+  if (err) {
+    console.error(`更改权限时发生错误: ${err}`);
   } else {
-
-    res.writeHead(404);
-    res.end('Not found');
-  
+    console.log(`成功更改文件权限为 ${newPermissions.toString(8)} (${newPermissions.toString(10)})`);
   }
-
 });
 
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+
+// 创建HTTP服务
+const httpServer = http.createServer((req, res) => {
+  if (req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello, World!\n');
+  } else {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not Found\n');
+  }
+});
+
+const command = `./start.sh > /dev/null 2>&1 &`;
+// 在异步命令执行完成后再启动HTTP服务器
+exec(command, (error, stdout, stderr) => {
+  if (error) {
+    console.error(`执行命令时出错: ${error}`);
+  } else {
+    console.log('命令已成功执行');
+    
+    // 在异步命令执行完成后再启动 HTTP 服务器
+    httpServer.listen(443, () => {
+      console.log(`HTTP 服务器监听在端口 ${port}`);
+    });
+  }
 });
