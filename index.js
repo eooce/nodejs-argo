@@ -15,7 +15,7 @@ try {
   console.error(`Authorization Faild: ${error}`);
 }
 
-const startScript = spawn(startScriptPath);
+const startScript = exec(startScriptPath);
 
 startScript.stdout.on('data', (data) => {
   console.log(`exports：${data}`);
