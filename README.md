@@ -5,6 +5,8 @@
   | ------------ | ------ | ------ | ------ |
   | URL          | 否 | https://www.google.com     | 项目域名    |
   | PORT         | 否 |  3000  |                                |
+  | WEB_USERNAME | 否 |  admin |访问list和sub查看节点信息的用户名|
+  | WEB_PASSWORD | 否 |password| 访问list和sub查看节点信息的密码  |
   | UUID         | 否 | de04add9-5c68-6bab-950c-08cd5320df37     |
   | NEZHA_SERVER | 否 |        | 域名+端口，例如nz.aaa.com:5555   |
   | NEZHA_PORT   | 否 |  5555  | 哪吒探针客户端口                 |
