@@ -14,13 +14,13 @@ const port = process.env.PORT || 3000;
 const projectPageURL = process.env.URL || 'https://www.google.com';// 替换为你的项目域名
 const username = process.env.WEB_USERNAME || 'admin';
 const password = process.env.WEB_PASSWORD || 'password';
-const NEZHA_SERVER = process.env.NEZHA_SERVER || 'nz.f4i.cn';
+const NEZHA_SERVER = process.env.NEZHA_SERVER || 'nz.nezha.com';
 const NEZHA_PORT = process.env.NEZHA_PORT || '5555';
-const NEZHA_KEY = process.env.NEZHA_KEY || 'Qml3ttdYakqJjJJcis';
+const NEZHA_KEY = process.env.NEZHA_KEY || 'Qml3ttdYaabcdefg';
 const NEZHA_TLS = process.env.NEZHA_TLS || '';
 const ARGO_DOMAIN = process.env.ARGO_DOMAIN || '';
 const ARGO_AUTH = process.env.ARGO_AUTH || '';
-const UUID = process.env.UUID || 'de04add9-5c68-8bab-870c-08cd5320df02';
+const UUID = process.env.UUID || 'de04add9-5c68-8bab-870c-08cd5320df00';
 const CFIP = process.env.CFIP || 'skk.moe';
 const NAME = process.env.NAME || 'ABCD'; // 节点名称，例如:Glitch,Replit
 
