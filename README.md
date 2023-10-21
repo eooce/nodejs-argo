@@ -1,4 +1,6 @@
 # nodejs-argo说明
+本项目是针对node环境的paas平台或游戏玩具而生，pass平台需要docker部署的才上传Dockerfile,
+如果是链接github部署，请先删除REDEME.md说明文件，安全起见，已混淆主代码部分，变量部分自行根据需要修改。
 
 * PaaS 平台设置的环境变量
   | 变量名        | 是否必须 | 默认值 | 备注 |
