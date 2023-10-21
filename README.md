@@ -11,7 +11,7 @@
   | NEZHA_KEY    | 否 |        | 哪吒探针客户端专用 Key           | 
   | NEZHA_TLS    | 否 |    0   | 默认不启用，若启用请填1           |
   | ARGO_DOMAIN  | 否 |        | argo固定隧道域名                 |
-  | ARGO_AUTH    | 否 |    0   | argo固定隧道json或token          |
+  | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
   | CFIP         | 否 |skk.moe | 节点优选域名或ip                 |
   | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit| 
         
