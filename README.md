@@ -6,7 +6,7 @@
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
   | URL          | 否 | https://www.google.com     | 项目域名    |
-  | PORT         | 否 |  3000  |监听端口，根据不同平台要求设置     |
+  | PORT         | 否 |  3000  |监听端口                         |
   | WEB_USERNAME | 否 |  admin |访问list和sub的用户名             |
   | WEB_PASSWORD | 否 |password| 访问list和sub的密码              |
   | UUID         | 否 | de04add9-5c68-8bab-870c-08cd5320df00     |
