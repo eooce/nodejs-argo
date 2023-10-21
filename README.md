@@ -18,4 +18,12 @@
   | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
   | CFIP         | 否 |skk.moe | 节点优选域名或ip                 |
   | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit| 
-        
+
+  # 节点
+  输出list和sub文件，list文件会在2分钟后自动删除，域名/list或域名/sub查看节点信息。
+
+  # 其他
+  本项目已添加自动访问功能，需在第12行中添加项目分配的域名
+
+  # 免责声明
+  
