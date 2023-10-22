@@ -26,7 +26,7 @@
 
 # 其他
 * 本项目已添加自动访问功能，需在第14行中添加项目分配的域名。
-* replit codesanbox，glitch及数十个游戏玩具平台均已测试ok。
+* Replit，Codesanbox，Glitch，koyeb，Fly，Northfrank，back4app，Scalingo，Alwaysdate，Zeabur及数十个游戏玩具平台均已测试ok。
   
 # 免责声明
 * 本程序仅供学习了解, 非盈利目的，请于下载后 24 小时内删除, 不得用作任何商业用途, 文字、数据及图片均有所属版权, 如转载须注明来源。
