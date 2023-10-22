@@ -25,7 +25,7 @@
 * 本项目采用Argo隧道，输出list和sub文件，list文件会在2分钟后自动删除，域名/list或域名/sub查看节点信息。
 
 # 其他
-* 本项目已添加自动访问功能，需在第14行中添加项目分配的域名。
+* 本项目已添加自动访问保活功能，仅支持不重启停机的平台，需在第14行中添加项目分配的域名。建议配合外部自动访问保活，保活项目地址：https://github.com/eoovve/Auto-keep-online
 * Replit，Codesanbox，Glitch，koyeb，Fly，Northfrank，back4app，Scalingo，Alwaysdate，Zeabur，Doprax及数十个游戏玩具平台均已测试ok。
   
 # 免责声明
