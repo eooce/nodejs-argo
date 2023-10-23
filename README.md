@@ -12,7 +12,7 @@
   | WEB_USERNAME | 否 |  admin |访问list和sub的用户名             |
   | WEB_PASSWORD | 否 |password| 访问list和sub的密码              |
   | UUID         | 否 | de04add9-5c68-8bab-870c-08cd5320df00     |
-  | NEZHA_SERVER | 否 |        | 域名+端口，例如nz.aaa.com:5555   |
+  | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com   |
   | NEZHA_PORT   | 否 |  5555  | 哪吒探针客户端口                 |
   | NEZHA_KEY    | 否 |        | 哪吒探针客户端专用 Key           | 
   | NEZHA_TLS    | 否 |    0   | 默认不启用，若启用请填1           |
