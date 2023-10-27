@@ -26,7 +26,7 @@
 
 # 其他
 * 本项目已添加自动访问保活功能，仅支持不重启停机的平台，需在第2行中添加项目分配的域名。建议配合外部自动访问保活，保活项目地址：https://github.com/eoovve/Auto-keep-online
-* Replit，Codesanbox，Glitch，koyeb，Fly，Northfrank，back4app，Alwaysdate，Zeabur，Doprax及数十个游戏玩具平台均已测试ok。
+* Replit，Codesanbox，Glitch，Render，koyeb，Fly，Northfrank，back4app，Alwaysdate，Zeabur，Doprax及数十个游戏玩具平台均已测试ok。
 * Render及其他比较严格的容器平台，请使用单docker image部署，地址：https://github.com/eoovve/nodejs-argo-image
   
 # 免责声明
