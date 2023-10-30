@@ -15,7 +15,7 @@
   | UUID         | 否 | de04add9-5c68-8bab-870c-08cd5320df00     |
   | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com    |
   | NEZHA_PORT   | 否 |  5555  | 当哪吒端口为443时，自动开启tls    |
-  | NEZHA_TLS    | 否 |    0   | 默认不启用，若启用请填1           |
+  | NEZHA_KEY    | 否 |        | 哪吒客务端专用KEY                |
   | ARGO_DOMAIN  | 否 |        | argo固定隧道域名                 |
   | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
   | CFIP         | 否 |skk.moe | 节点优选域名或ip                 |
