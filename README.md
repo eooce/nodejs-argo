@@ -13,16 +13,18 @@
   | WEB_USERNAME | 否 |  admin |访问list和sub的用户名             |
   | WEB_PASSWORD | 否 |password| 访问list和sub的密码              |
   | UUID         | 否 | de04add9-5c68-8bab-870c-08cd5320df00     |
+  | TIME         | 否 |2 *60 *1000|自动访问间隔时间（默认2分钟）
   | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com    |
   | NEZHA_PORT   | 否 |  5555  | 当哪吒端口为443时，自动开启tls    |
   | NEZHA_KEY    | 否 |        | 哪吒客务端专用KEY                |
   | ARGO_DOMAIN  | 否 |        | argo固定隧道域名                 |
   | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
   | CFIP         | 否 |skk.moe | 节点优选域名或ip                 |
-  | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit| 
+  | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit|
+  | FILE_PATH    | 否 |  .npm  | 运行目录                         | 
 
 # 节点信息
-* 本项目采用Argo隧道，输出list和sub文件，list文件会在2分钟后自动删除，域名/list或域名/sub查看节点信息。
+* 本项目采用Argo隧道，输出list和sub文件，默认在.npm文件夹内，域名/list或域名/sub查看节点信息。
 
 # 其他
 * 本项目已添加自动访问保活功能，仅支持不重启停机的平台，需在第2行中添加项目分配的域名。建议配合外部自动访问保活，保活项目地址：https://github.com/eoovve/Auto-keep-online
