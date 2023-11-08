@@ -22,7 +22,7 @@
   | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
   | CFIP         | 否 |skk.moe | 节点优选域名或ip                 |
   | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit|
-  | FILE_PATH    | 否 |  .npm  | 运行目录                         | 
+  | FILE_PATH    | 否 |  temp  | 运行目录                         | 
 
 # 节点信息
 * 本项目采用Argo隧道，输出list和sub文件和订阅，默认在temp文件夹内，域名/list或域名/sub查看节点信息，list文件在5分钟后会自动删除。
