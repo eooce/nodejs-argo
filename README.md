@@ -3,6 +3,7 @@
 * node玩具平台只需上传index.js和package.json即可，paas平台需要docker部署的才上传Dockerfile。
 * 如需是链接github部署，请先删除README.md说明文件，安全起见，已混淆主代码部分，无任何日志输出。
 * 不填写ARGO_DOMAIN和ARGO_AUTH两个变量即启用临时隧道，反之则使用固定隧道。
+* 若遇到已获取到临时隧道但节点不通，说明域名被墙，重启即可
 * 无需设置NEZHA_TLS,当哪吒端口为443时，自动开启--tls。
 
 * PaaS 平台设置的环境变量，index.js中的1至12行中设置
@@ -24,7 +25,7 @@
   | FILE_PATH    | 否 |  .npm  | 运行目录                         | 
 
 # 节点信息
-* 本项目采用Argo隧道，输出list和sub文件，默认在.npm文件夹内，域名/list或域名/sub查看节点信息。
+* 本项目采用Argo隧道，输出list和sub文件和订阅，默认在temp文件夹内，域名/list或域名/sub查看节点信息，list文件在5分钟后会自动删除。
 
 # 其他
 * 本项目已添加自动访问保活功能，仅支持不重启停机的平台，需在第2行中添加项目分配的域名。建议配合外部自动访问保活，保活项目地址：https://github.com/eoovve/Auto-keep-online
