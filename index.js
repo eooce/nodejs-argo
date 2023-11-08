@@ -1,5 +1,5 @@
 const port = process.env.PORT || 3000;                               // 监听端口
-const projectPageURL = process.env.URL || 'https://www.google.com';  // 替换为项目分配的域名
+const projectPageURL = process.env.URL || 'https://www.google.com';  // 填写项目分配的域名可自动访问保活
 const intervalInMilliseconds = process.env.TIME || 2 * 60 * 1000;    // 自动访问间隔时间（2分钟）
 const username = process.env.WEB_USERNAME || 'admin';                // 访问list和sub的用户名
 const password = process.env.WEB_PASSWORD || 'password';             // 访问list和sub的密码
