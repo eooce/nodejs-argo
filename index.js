@@ -1,4 +1,3 @@
-
 const UUID = process.env.UUID || '0004add9-5c68-8bab-870c-08cd5320df55';
 const projectPageURL = process.env.URL || '';// 填写项目域名可开启自动访问保活,例如：https://www.google.com
 const intervalInMilliseconds = process.env.TIME || 2 * 60 * 1000;  // 自动访问间隔时间（2分钟）
