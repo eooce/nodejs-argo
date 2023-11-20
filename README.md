@@ -12,8 +12,6 @@
   | ------------ | ------ | ------ | ------ |
   | URL          | 否 | https://www.google.com     | 项目域名    |
   | PORT         | 否 |  3000  |监听端口                         |
-  | WEB_USERNAME | 否 |  admin |访问list和sub的用户名             |
-  | WEB_PASSWORD | 否 |password| 访问list和sub的密码              |
   | UUID         | 否 | de04add9-5c68-8bab-870c-08cd5320df00|UUID|
   | TIME         | 否 |2 * 60 * 1000|自动访问间隔时间（默认2分钟）
   | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com    |
