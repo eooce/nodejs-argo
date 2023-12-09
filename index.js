@@ -7,7 +7,7 @@ const NEZHA_KEY = process.env.NEZHA_KEY || '';
 const ARGO_DOMAIN = process.env.ARGO_DOMAIN || '';  // 固定隧道域名，留空即启用临时隧道
 const ARGO_AUTH = process.env.ARGO_AUTH || '';     // 固定隧道json或token，留空即启用临时隧道
 const port = process.env.PORT || 3000;
-const CFIP = process.env.CFIP || 'skk.moe';
+const CFIP = process.env.CFIP || 'government.se';
 const NAME = process.env.NAME || 'ABCD';
 const FILE_PATH = process.env.FILE_PATH || './temp'; // 运行文件夹
 
