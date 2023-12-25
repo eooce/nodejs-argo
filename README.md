@@ -25,8 +25,10 @@
   | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit|
   | FILE_PATH    | 否 |  temp  | 运行目录                         | 
 
-# 节点信息
-* 本项目采用Argo隧道，输出sub文件和订阅，默认在temp文件夹内，域名/sub或域名:端口/sub查看节点信息,也是订阅连接
+# 节点输出
+* 输出sub.txt节点文件，默认存放路径为temp
+* 订阅：分配的域名/sub;例如https://www.google.com/sub
+* 非标端口订阅(游戏类):分配的域名:端口/sub,前缀不是https，而是http，例如http://www.google.com:1234/sub
 
 # 其他
 * 本项目已添加自动访问保活功能，仅支持不重启停机的平台，需在第2行中添加项目分配的域名。建议配合外部自动访问保活，保活项目地址：https://github.com/eoovve/Auto-keep-online
