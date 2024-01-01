@@ -4,7 +4,7 @@
 * 如需是链接github部署，请先删除README.md说明文件，安全起见，已混淆主代码部分。
 * 不填写ARGO_DOMAIN和ARGO_AUTH两个变量即启用临时隧道，反之则使用固定隧道。
 * 若遇到已获取到临时隧道但节点不通，说明域名被墙，重启即可
-* 无需设置NEZHA_TLS,当哪吒端口为443时，自动开启--tls。
+* 无需设置NEZHA_TLS,当哪吒端口为{443,8443,2096,2087,2083,2053}其中之一时，自动开启--tls。
 * 右边的Releases中已适配FreeBSD，自行下载，类似的平台Serv00，CT8
 
 * PaaS 平台设置的环境变量，index.js中的1至12行中设置
@@ -14,9 +14,9 @@
   | PORT         | 否 |  3000  |http服务监听端口，也是订阅端口     |
   | ARGO_PORT    | 否 |  8080  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
   | UUID         | 否 | 89c13786-25aa-4520-b2e7-12cd60fb5202|UUID|
-  | TIME         | 否 |2 * 60 * 1000|自动访问间隔时间（默认2分钟）
+  | TIME         | 否 |120     |自动访问间隔时间（默认120秒）单位：秒|
   | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com    |
-  | NEZHA_PORT   | 否 |  5555  | 当哪吒端口为443时，自动开启tls    |
+  | NEZHA_PORT   | 否 |  5555  | 哪吒端口为{443,8443,2096,2087,2083,2053}其中之一时，开启tls|
   | NEZHA_KEY    | 否 |        | 哪吒客务端专用KEY                |
   | ARGO_DOMAIN  | 否 |        | argo固定隧道域名                 |
   | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
