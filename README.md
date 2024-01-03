@@ -37,7 +37,7 @@
 
 # vps一键部署命令
 * 3000端口改为可用的的开放端口,母鸡可忽略,对应哪吒变量也可更改，不需要哪吒可忽略
-* 其他变量可自行添加在哪吒变量后面，例如固定隧道等，每个变量之间有一个空格
+* 其他变量可自行添加在哪吒变量后面，参考上方变量表，例如固定隧道等，每个变量之间有一个空格
 * 订阅：ip:端口/sub
 ```
 apt-get update && apt-get install -y curl nodejs npm screen && curl -O https://raw.githubusercontent.com/eooce/nodejs-argo/main/index.js && curl -O https://raw.githubusercontent.com/eooce/nodejs-argo/main/package.json && npm install && chmod +x index.js && NAME=Vls PORT=3000 NEZHA_SERVER=nz.f4i.cn NEZHA_PORT=5555 NEZHA_KEY=12345678 screen node index.js
