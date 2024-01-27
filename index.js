@@ -83,7 +83,7 @@ fs.writeFileSync(path.join(FILE_PATH, 'config.json'), JSON.stringify(config, nul
 // 判断系统架构
 function getSystemArchitecture() {
   const arch = os.arch();
-  if (arch === 'arm' || arch === 'arm64') {
+  if (arch === 'arm' || arch === 'arm64' || arch === 'aarch64') {
     return 'arm';
   } else {
     return 'amd';
