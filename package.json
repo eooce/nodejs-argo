@@ -10,10 +10,6 @@
   "scripts": {
     "start": "node index.js"
   },
-  "dependencies": {
-    "axios": "latest",
-    "express": "^4.18.2"
-  },
   "engines": {
     "node": ">=14"
   }
