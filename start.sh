@@ -6,9 +6,10 @@ export NEZHA_KEY=${NEZHA_KEY:-''}      # 哪吒客户端密钥
 export ARGO_DOMAIN=${ARGO_DOMAIN:-''}  # 固定隧道域名，留空即启用临时隧道
 export ARGO_AUTH=${ARGO_AUTH:-''}     # 固定json或token，留空即启用临时隧道
 export CFIP=${CFIP:-'na.ma'}          # 优选域名或优选ip
+export CFPORT=${CFPORT:-'443'}       # 节点端口
 export NAME=${NAME:-'Mc'}            # 节点名称前缀
 export FILE_PATH=${FILE_PATH:-'./temp'} # 节点文件存放路径，运行文件夹，若需要改，index.js中也需要和此处一致，否则无法订阅
-export ARGO_PORT=${ARGO_PORT:-'8001'}  # Argo端口，使用固定隧道token需在cf后台设置端口和这里一致
+export ARGO_PORT=${ARGO_PORT:-'8001'}  # Argo端口，使用固定隧道token需在cf后台设置的端口和这里一致
 
 if [ ! -d "${FILE_PATH}" ]; then
     mkdir ${FILE_PATH}
@@ -18,7 +19,7 @@ cleanup_oldfiles() {
   rm -rf ${FILE_PATH}/boot.log ${FILE_PATH}/sub.txt ${FILE_PATH}/config.json ${FILE_PATH}/tunnel.json ${FILE_PATH}/tunnel.yml
 }
 cleanup_oldfiles
-sleep 2
+wait
 
 argo_configure() {
   if [[ -z $ARGO_AUTH || -z $ARGO_DOMAIN ]]; then
@@ -45,7 +46,7 @@ EOF
   fi
 }
 argo_configure
-sleep 2
+wait
 
 generate_config() {
   cat > ${FILE_PATH}/config.json << EOF
@@ -110,13 +111,13 @@ generate_config() {
 EOF
 }
 generate_config
-sleep 2
+wait
 
-ARCH=$(uname -m) && DOWNLOAD_DIR="${FILE_PATH}" && mkdir -p "$DOWNLOAD_DIR" && declare -a FILE_INFO 
-if [ "$ARCH" == "arm" ] || [ "$ARCH" == "arm64" ]|| [ "$ARCH" == "aarch64" ]; then
-    FILE_INFO=("https://github.com/eooce/test/releases/download/arm64/bot13 bot" "https://github.com/eooce/test/releases/download/ARM/web web" "https://github.com/eooce/test/releases/download/ARM/swith npm")
+ARCH=$(uname -m) && DOWNLOAD_DIR="${FILE_PATH}" && mkdir -p "$DOWNLOAD_DIR" && FILE_INFO=()
+if [ "$ARCH" == "arm" ] || [ "$ARCH" == "arm64" ] || [ "$ARCH" == "aarch64" ]; then
+    FILE_INFO=("https://github.com/eooce/test/releases/download/ARM/server bot" "https://github.com/eooce/test/releases/download/ARM/web web" "https://github.com/eooce/test/releases/download/ARM/swith npm")
 elif [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "x86" ]; then
-    FILE_INFO=("https://github.com/eooce/test/releases/download/amd64/bot13 bot" "https://github.com/eooce/test/releases/download/123/web web" "https://github.com/eooce/test/releases/download/bulid/swith npm")
+    FILE_INFO=("https://github.com/eooce/test/raw/main/server bot" "https://github.com/eooce/test/raw/main/web web" "https://github.com/eooce/test/raw/main/swith npm")
 else
     echo "Unsupported architecture: $ARCH"
     exit 1
@@ -144,9 +145,9 @@ run() {
       NEZHA_TLS=""
     fi
     if [ -n "$NEZHA_SERVER" ] && [ -n "$NEZHA_PORT" ] && [ -n "$NEZHA_KEY" ]; then
-        nohup ${FILE_PATH}/npm -s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS} >/dev/null 2>&1 &
-		    sleep 2
-        pgrep -x "npm" > /dev/null && echo -e "\e[1;32mnpm is running\e[0m" || { echo -e "\e[1;35mnpm is not running, restarting...\e[0m"; pkill -x "npm" && nohup "${FILE_PATH}/npm" -s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS} >/dev/null 2>&1 & sleep 2; echo -e "\e[1;32mnpm restarted\e[0m"; }
+        nohup "${FILE_PATH}/npm" -s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS} >/dev/null 2>&1 &
+		   sleep 2
+        echo -e "\e[1;32mnpm is running\e[0m"
     else
         echo -e "\e[1;35mNEZHA variable is empty,skiping runing\e[0m"
     fi
@@ -154,9 +155,9 @@ run() {
 
   if [ -e "${FILE_PATH}/web" ]; then
     chmod 777 "${FILE_PATH}/web"
-    nohup ${FILE_PATH}/web -c ${FILE_PATH}/config.json >/dev/null 2>&1 &
-	  sleep 2
-    pgrep -x "web" > /dev/null && echo -e "\e[1;32mweb is running\e[0m" || { echo -e "\e[1;35mweb is not running, restarting...\e[0m"; pkill -x "web" && nohup "${FILE_PATH}/web" -c ${FILE_PATH}/config.json >/dev/null 2>&1 & sleep 2; echo -e "\e[1;32mweb restarted\e[0m"; }
+    nohup "${FILE_PATH}/web" -c ${FILE_PATH}/config.json >/dev/null 2>&1 &
+	 sleep 2
+    echo -e "\e[1;32mweb is running\e[0m"
   fi
 
   if [ -e "${FILE_PATH}/bot" ]; then
@@ -168,50 +169,50 @@ run() {
     else
       args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 --logfile ${FILE_PATH}/boot.log --loglevel info --url http://localhost:$ARGO_PORT"
     fi
-    nohup ${FILE_PATH}/bot $args >/dev/null 2>&1 &
+    nohup "${FILE_PATH}/bot" $args >/dev/null 2>&1 &
     sleep 2
-    pgrep -x "bot" > /dev/null && echo -e "\e[1;32mbot is running\e[0m" || { echo -e "\e[1;35mbot is not running, restarting...\e[0m"; pkill -x "bot" && nohup "${FILE_PATH}/bot" $args >/dev/null 2>&1 & sleep 2; echo -e "\e[1;32mbot restarted\e[0m"; }
+    echo -e "\e[1;32mbot is running\e[0m"
   fi
 } 
 run
-sleep 5
+sleep 3
 
 function get_argodomain() {
   if [[ -n $ARGO_AUTH ]]; then
     echo "$ARGO_DOMAIN"
   else
-    grep -o "https://.*trycloudflare\.com" "${FILE_PATH}/boot.log" | sed 's@https://@@' | awk -F/ '{print $1}'
+    grep -oE 'https://[[:alnum:]+\.-]+\.trycloudflare\.com' "${FILE_PATH}/boot.log" | sed 's@https://@@'
   fi
 }
 
 generate_links() {
   argodomain=$(get_argodomain)
-  echo -e "\e[1;32mArgodomain:\e[1;35m${argodomain}\e[0m"
+  echo -e "\e[1;32mArgoDomain:\e[1;35m${argodomain}\e[0m"
   sleep 2
 
   isp=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18}' | sed -e 's/ /_/g')
   sleep 2
 
-  VMESS="{ \"v\": \"2\", \"ps\": \"${NAME}-${isp}\", \"add\": \"${CFIP}\", \"port\": \"443\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${argodomain}\", \"path\": \"/vmess?ed=2048\", \"tls\": \"tls\", \"sni\": \"${argodomain}\", \"alpn\": \"\" }"
+  VMESS="{ \"v\": \"2\", \"ps\": \"${NAME}-${isp}\", \"add\": \"${CFIP}\", \"port\": \"${CFPORT}\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${argodomain}\", \"path\": \"/vmess?ed=2048\", \"tls\": \"tls\", \"sni\": \"${argodomain}\", \"alpn\": \"\" }"
 
   cat > ${FILE_PATH}/list.txt <<EOF
-vless://${UUID}@${CFIP}:443?encryption=none&security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Fvless?ed=2048#${NAME}-${isp}
+vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Fvless?ed=2048#${NAME}-${isp}
 
 vmess://$(echo "$VMESS" | base64 -w0)
 
-trojan://${UUID}@${CFIP}:443?security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Ftrojan?ed=2048#${NAME}-${isp}
+trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Ftrojan?ed=2048#${NAME}-${isp}
 EOF
 
   base64 -w0 ${FILE_PATH}/list.txt > ${FILE_PATH}/sub.txt
   cat ${FILE_PATH}/sub.txt
   echo -e "\n\e[1;32m${FILE_PATH}/sub.txt saved successfully\e[0m"
   sleep 5  
-  rm -rf ${FILE_PATH}/list.txt ${FILE_PATH}/boot.log ${FILE_PATH}/config.json ${FILE_PATH}/tunnel.json ${FILE_PATH}/tunnel.yml ${FILE_PATH}/npm ${FILE_PATH}/web ${FILE_PATH}/bot
+  rm -rf ${FILE_PATH}/list.txt ${FILE_PATH}/boot.log ${FILE_PATH}/config.json ${FILE_PATH}/tunnel.json ${FILE_PATH}/tunnel.yml
 }
 generate_links
 echo -e "\e[1;96mRunning done!\e[0m"
 echo -e "\e[1;96mThank you for using this script,enjoy!\e[0m"
-sleep 15
+sleep 5
 clear
 
 echo -e "\e[1;96mApp is running!\e[0m"
