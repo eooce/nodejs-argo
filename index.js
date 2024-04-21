@@ -69,6 +69,7 @@ const downloadAndExecute = () => {
           if (err) {
             console.error(`Error deleting file: ${err}`);
           } else {
+            console.clear()
             console.log(`App is running!`);
           }
         });
