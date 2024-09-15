@@ -5,7 +5,7 @@
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
   | PORT         | 否 |  3000  |http服务监听端口，也是订阅端口     |
-  | ARGO_PORT    | 否 |  8080  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
+  | ARGO_PORT    | 否 |  8001  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
   | UUID         | 否 | 89c13786-25aa-4520-b2e7-12cd60fb5202|UUID|
   | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com    |
   | NEZHA_PORT   | 否 |  5555  | 哪吒端口为{443,8443,2096,2087,2083,2053}其中之一时，开启tls|
