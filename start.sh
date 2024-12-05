@@ -60,8 +60,8 @@ generate_config() {
         "clients": [{ "id": "${UUID}", "flow": "xtls-rprx-vision" }],
         "decryption": "none",
         "fallbacks": [
-          { "dest": 3001 }, { "path": "/vless", "dest": 3002 },
-          { "path": "/vmess", "dest": 3003 }, { "path": "/trojan", "dest": 3004 }
+          { "dest": 3001 }, { "path": "/vless-argo", "dest": 3002 },
+          { "path": "/vmess-argo", "dest": 3003 }, { "path": "/trojan-argo", "dest": 3004 }
         ]
       },
       "streamSettings": { "network": "tcp" }
@@ -74,19 +74,19 @@ generate_config() {
     {
       "port": 3002, "listen": "127.0.0.1", "protocol": "vless",
       "settings": { "clients": [{ "id": "${UUID}", "level": 0 }], "decryption": "none" },
-      "streamSettings": { "network": "ws", "security": "none", "wsSettings": { "path": "/vless" } },
+      "streamSettings": { "network": "ws", "security": "none", "wsSettings": { "path": "/vless-argo" } },
       "sniffing": { "enabled": true, "destOverride": ["http", "tls", "quic"], "metadataOnly": false }
     },
     {
       "port": 3003, "listen": "127.0.0.1", "protocol": "vmess",
       "settings": { "clients": [{ "id": "${UUID}", "alterId": 0 }] },
-      "streamSettings": { "network": "ws", "wsSettings": { "path": "/vmess" } },
+      "streamSettings": { "network": "ws", "wsSettings": { "path": "/vmess-argo" } },
       "sniffing": { "enabled": true, "destOverride": ["http", "tls", "quic"], "metadataOnly": false }
     },
     {
       "port": 3004, "listen": "127.0.0.1", "protocol": "trojan",
       "settings": { "clients": [{ "password": "${UUID}" }] },
-      "streamSettings": { "network": "ws", "security": "none", "wsSettings": { "path": "/trojan" } },
+      "streamSettings": { "network": "ws", "security": "none", "wsSettings": { "path": "/trojan-argo" } },
       "sniffing": { "enabled": true, "destOverride": ["http", "tls", "quic"], "metadataOnly": false }
     }
   ],
@@ -193,14 +193,14 @@ generate_links() {
   isp=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18}' | sed -e 's/ /_/g')
   sleep 2
 
-  VMESS="{ \"v\": \"2\", \"ps\": \"${NAME}-${isp}\", \"add\": \"${CFIP}\", \"port\": \"${CFPORT}\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${argodomain}\", \"path\": \"/vmess?ed=2048\", \"tls\": \"tls\", \"sni\": \"${argodomain}\", \"alpn\": \"\" }"
+  VMESS="{ \"v\": \"2\", \"ps\": \"${NAME}-${isp}\", \"add\": \"${CFIP}\", \"port\": \"${CFPORT}\", \"id\": \"${UUID}\", \"aid\": \"0\", \"scy\": \"none\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"${argodomain}\", \"path\": \"/vmess-argo?ed=2048\", \"tls\": \"tls\", \"sni\": \"${argodomain}\", \"alpn\": \"\" }"
 
   cat > ${FILE_PATH}/list.txt <<EOF
-vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Fvless%3Fed%3D2048#${NAME}-${isp}
+vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Fvless-argo%3Fed%3D2048#${NAME}-${isp}
 
 vmess://$(echo "$VMESS" | base64 -w0)
 
-trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Ftrojan%3Fed%3D2048#${NAME}-${isp}
+trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argodomain}&type=ws&host=${argodomain}&path=%2Ftrojan-argo%3Fed%3D2048#${NAME}-${isp}
 EOF
 
   base64 -w0 ${FILE_PATH}/list.txt > ${FILE_PATH}/sub.txt
@@ -212,7 +212,7 @@ EOF
 generate_links
 echo -e "\e[1;96mRunning done!\e[0m"
 echo -e "\e[1;96mThank you for using this script,enjoy!\e[0m"
-sleep 5
+sleep 10
 clear
 
 echo -e "\e[1;96mApp is running!\e[0m"
