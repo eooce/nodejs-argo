@@ -91,22 +91,16 @@ generate_config() {
     }
   ],
   "dns": { "servers": ["https+local://8.8.8.8/dns-query"] },
-  "outbounds": [
-    { "protocol": "freedom" },
-    {
-      "tag": "WARP", "protocol": "wireguard",
-      "settings": {
-        "secretKey": "YFYOAdbw1bKTHlNNi+aEjBM3BO7unuFC5rOkMRAz9XY=",
-        "address": ["172.16.0.2/32", "2606:4700:110:8a36:df92:102a:9602:fa18/128"],
-        "peers": [{ "publicKey": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=", "allowedIPs": ["0.0.0.0/0", "::/0"], "endpoint": "162.159.193.10:2408" }],
-        "reserved": [78, 135, 76], "mtu": 1280
-      }
-    }
-  ],
-  "routing": {
-    "domainStrategy": "AsIs",
-    "rules": [{ "type": "field", "domain": ["domain:openai.com", "domain:ai.com"], "outboundTag": "WARP" }]
-  }
+   "outbounds": [
+        {
+            "protocol": "freedom",
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "block"
+        }
+    ]
 }
 EOF
 }
@@ -175,7 +169,7 @@ run() {
   fi
 } 
 run
-sleep 3
+sleep 5
 
 function get_argodomain() {
   if [[ -n $ARGO_AUTH ]]; then
