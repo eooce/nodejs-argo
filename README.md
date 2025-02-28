@@ -10,37 +10,28 @@
 * PaaS 平台设置的环境变量，index.js中的1至12行中设置
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
-  | URL          | 否 | https://www.google.com     |项目分配的域名|
+  | UPLOAD_URL   | 否 | 填写部署Merge-sub项目后的地址  |订阅上传地址|
+  | PROHECT_URL  | 否 | https://www.google.com     |项目分配的域名|
   | PORT         | 否 |  3000  |http服务监听端口，也是订阅端口     |
   | ARGO_PORT    | 否 |  8080  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
   | UUID         | 否 | 89c13786-25aa-4520-b2e7-12cd60fb5202|UUID|
   | TIME         | 否 |120     |自动访问间隔时间（默认120秒）单位：秒|
-  | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com    |
-  | NEZHA_PORT   | 否 |  5555  | 哪吒端口为{443,8443,2096,2087,2083,2053}其中之一时，开启tls|
-  | NEZHA_KEY    | 否 |        | 哪吒客务端专用KEY                |
+  | NEZHA_SERVER | 否 |        | 哪吒面板域名，v1：nz.aaa.com:8008  v0: nz.aaa.com  |
+  | NEZHA_PORT   | 否 |        | 哪吒v1没有此项，哪吒v0端口为{443,8443,2096,2087,2083,2053}其中之一时，开启tls|
+  | NEZHA_KEY    | 否 |        | 哪吒v1 或v0 密钥                |
   | ARGO_DOMAIN  | 否 |        | argo固定隧道域名                 |
   | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
   | CFIP         | 否 |skk.moe | 节点优选域名或ip                 |
   | CFPORT       | 否 |  443   |节点端口                          |
-  | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit|
-  | FILE_PATH    | 否 |  temp  | 运行目录,节点存放路径             | 
+  | NAME         | 否 |  Vls  | 节点名称前缀，例如：Koyeb Fly      |
+  | FILE_PATH    | 否 |  tmp  | 运行目录,节点存放路径               |
+  | SUB_PATH     | 否 |  sub  | 节点订阅路径                     | 
 
 # 节点输出
-* 输出sub.txt节点文件，默认存放路径为temp
+* 输出sub.txt节点文件，默认存放路径为tmp
 * 订阅：分配的域名/sub;例如https://www.google.com/sub
 * 非标端口订阅(游戏类):分配的域名:端口/sub,前缀不是https，而是http，例如http://www.google.com:1234/sub
 
-# 其他
-* 本项目已添加自动访问保活功能，仅支持不重启停机的平台，需在第2行中添加项目分配的域名。建议配合外部自动访问保活，保活项目地址：https://github.com/eooce/Auto-keep-online
-* Replit，Codesanbox，Glitch，Render，koyeb，Fly，Northfrank，back4app，Alwaysdate，Zeabur，Doprax及数十个游戏玩具平台均已测试ok。
-* Render及其他比较严格的容器平台，请使用docker image部署，Dockerfile地址：https://github.com/eooce/nodejs-argo-image
-
-# vps一键部署命令
-* 3000端口改为可用的的开放端口,母鸡可忽略,对应哪吒变量也可更改，不需要哪吒可忽略
-* 其他变量可自行添加在哪吒变量后面，参考上方变量表，例如固定隧道等，每个变量之间有一个空格
-* 订阅：ip:端口/sub
-```
-apt-get update && apt-get install -y curl nodejs npm screen && curl -O https://raw.githubusercontent.com/eooce/nodejs-argo/main/index.js && curl -O https://raw.githubusercontent.com/eooce/nodejs-argo/main/package.json && npm install && chmod +x index.js && NAME=Vls PORT=3000 NEZHA_SERVER=nz.abcd.cn NEZHA_PORT=5555 NEZHA_KEY=12345678 screen node index.js
 ```
   
   
