@@ -32,7 +32,7 @@
 * 订阅：分配的域名/sub;例如https://www.google.com/sub
 * 非标端口订阅(游戏类):分配的域名:端口/sub,前缀不是https，而是http，例如http://www.google.com:1234/sub
 
-```
+
   
   
 # 免责声明
