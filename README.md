@@ -10,7 +10,7 @@
 * PaaS 平台设置的环境变量，index.js中的1至12行中设置
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
-  | UPLOAD_URL   | 否 | 填写部署Merge-sub项目后的地址  |订阅上传地址|
+  | UPLOAD_URL   | 否 | 填写部署Merge-sub项目后的首页地址  |订阅上传地址,例如：https://merge.serv00.net|
   | PROHECT_URL  | 否 | https://www.google.com     |项目分配的域名|
   | PORT         | 否 |  3000  |http服务监听端口，也是订阅端口     |
   | ARGO_PORT    | 否 |  8080  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
