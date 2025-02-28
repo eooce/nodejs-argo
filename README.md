@@ -1,5 +1,5 @@
 # 说明 （部署前请仔细阅读完）
-* 本项目是针对node环境的paas平台和游戏玩具而生，采用Argo隧道部署节点，集成哪吒探针服务。
+* 本项目是针对node环境的paas平台和游戏玩具而生，采用Argo隧道部署节点，集成哪吒探针v0或v1可选。
 * node玩具平台只需上传index.js和package.json即可，paas平台需要docker部署的才上传Dockerfile。
 * 如需是链接github部署，请先删除README.md说明文件，安全起见，已混淆主代码部分。
 * 不填写ARGO_DOMAIN和ARGO_AUTH两个变量即启用临时隧道，反之则使用固定隧道。
@@ -10,25 +10,26 @@
 * PaaS 平台设置的环境变量，index.js中的1至12行中设置
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
-  | URL          | 否 | https://www.google.com     |项目分配的域名|
+  | UPLOAD_URL   | 否 | 填写部署Merge-sub项目后的地址  |订阅上传地址|
+  | PROHECT_URL  | 否 | https://www.google.com     |项目分配的域名|
   | PORT         | 否 |  3000  |http服务监听端口，也是订阅端口     |
   | ARGO_PORT    | 否 |  8080  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
   | UUID         | 否 | 89c13786-25aa-4520-b2e7-12cd60fb5202|UUID|
-  | TIME         | 否 |120     |自动访问间隔时间（默认120秒）单位：秒|
-  | NEZHA_SERVER | 否 |        | 哪吒服务端域名，例如nz.aaa.com    |
-  | NEZHA_PORT   | 否 |  5555  | 哪吒端口为{443,8443,2096,2087,2083,2053}其中之一时，开启tls|
-  | NEZHA_KEY    | 否 |        | 哪吒客务端专用KEY                |
-  | ARGO_DOMAIN  | 否 |        | argo固定隧道域名                 |
-  | ARGO_AUTH    | 否 |        | argo固定隧道json或token          |
-  | CFIP         | 否 |skk.moe | 节点优选域名或ip                 |
-  | CFPORT       | 否 |  443   |节点端口                          |
-  | NAME         | 否 |  ABCD  | 节点名称前缀，例如：Glitch，Replit|
-  | FILE_PATH    | 否 |  temp  | 运行目录,节点存放路径             | 
-
+  | NEZHA_SERVER | 否 |        | 哪吒面板域名，v1：nz.aaa.com:8008  v0: nz.aaa.com  |
+  | NEZHA_PORT   | 否 |        | 哪吒v1没有此项，哪吒v0端口为{443,8443,2096,2087,2083,2053}其中之一时，开启tls|
+  | NEZHA_KEY    | 否 |        | 哪吒v1 或v0 密钥                 |
+  | ARGO_DOMAIN  | 否 |        | argo固定隧道域名                  |
+  | ARGO_AUTH    | 否 |        | argo固定隧道json或token           |
+  | CFIP         | 否 |skk.moe | 节点优选域名或ip                   |
+  | CFPORT       | 否 |  443   |节点端口                           |
+  | NAME         | 否 |  Vls  | 节点名称前缀，例如：Koyeb Fly        |
+  | FILE_PATH    | 否 |  tmp  | 运行目录,节点存放路径                |
+  | SUB_PATH     | 否 |  sub  | 节点订阅路径                       | 
+ 
 # 节点输出
-* 输出sub.txt节点文件，默认存放路径为temp
-* 订阅：分配的域名/sub;例如https://www.google.com/sub
-* 非标端口订阅(游戏类):分配的域名:端口/sub,前缀不是https，而是http，例如http://www.google.com:1234/sub
+* 输出sub.txt节点文件，默认存放路径为tmp
+* 订阅：分配的域名/${SUB_PATH};例如https://www.google.com/${SUB_PATH}
+* 非标端口订阅(游戏类):分配的域名:端口/${SUB_PATH},前缀是http，例如http://www.google.com:1234/${SUB_PATH}
 
 # 其他
 * 本项目已添加自动访问保活功能，仅支持不重启停机的平台，需在第2行中添加项目分配的域名。建议配合外部自动访问保活，保活项目地址：https://github.com/eooce/Auto-keep-online
