@@ -1,5 +1,5 @@
 ## 赞助
-感谢vtexs提供赞助！![image](https://github.com/user-attachments/assets/ff1e7600-b710-4e81-801f-d855f3adb666[https://console.vtexs.com/?affid=1548])
+* 感谢[VTEXS](https://console.vtexs.com/?affid=1548)提供赞助
 
 # 说明 （部署前请仔细阅读完）
 * 本项目是针对node环境的paas平台和游戏玩具而生，采用Argo隧道部署节点，集成哪吒探针v0或v1可选。
