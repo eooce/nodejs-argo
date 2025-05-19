@@ -14,8 +14,8 @@
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
   | UPLOAD_URL   | 否 | 填写部署Merge-sub项目后的首页地址  |订阅上传地址,例如：https://merge.serv00.net|
-  | PROHECT_URL  | 否 | https://www.google.com     |项目分配的域名|
-  | AUTO_ACCESS  | 否 |  flase |flase关闭自动访问保活，true开启，需同时填写PROHECT_URL变量|
+  | PROJECT_URL  | 否 | https://www.google.com     |项目分配的域名|
+  | AUTO_ACCESS  | 否 |  flase |flase关闭自动访问保活，true开启，需同时填写PROJECT_URL变量|
   | PORT         | 否 |  3000  |http服务监听端口，也是订阅端口     |
   | ARGO_PORT    | 否 |  8001  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
   | UUID         | 否 | 89c13786-25aa-4520-b2e7-12cd60fb5202|UUID,使用哪吒v1在不同的平台部署需要修改|
