@@ -1,10 +1,10 @@
 ## 赞助
-* 感谢[VTEXS](https://console.vtexs.com/?affid=1548)提供赞助
+* 感谢[VTEXS](https://console.vtexs.com/?affid=1548)提供赞助优质双isp vps。
 
 # 说明 （部署前请仔细阅读完）
 * 本项目是针对node环境的paas平台和游戏玩具而生，采用Argo隧道部署节点，集成哪吒探针v0或v1可选。
 * node玩具平台只需上传index.js和package.json即可，paas平台需要docker部署的才上传Dockerfile。
-* 如需是链接github部署，请先删除README.md说明文件，安全起见，已混淆主代码部分。
+* 如需是链接github部署，请先删除README.md说明文件。
 * 不填写ARGO_DOMAIN和ARGO_AUTH两个变量即启用临时隧道，反之则使用固定隧道。
 * 若遇到已获取到临时隧道但节点不通，说明域名被墙，重启即可
 * 无需设置NEZHA_TLS,当哪吒端口为{443,8443,2096,2087,2083,2053}其中之一时，自动开启--tls。
@@ -14,7 +14,8 @@
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
   | UPLOAD_URL   | 否 | 填写部署Merge-sub项目后的首页地址  |订阅上传地址,例如：https://merge.serv00.net|
-  | PROHECT_URL  | 否 | https://www.google.com     |项目分配的域名|
+  | PROJECT_URL  | 否 | https://www.google.com     |项目分配的域名|
+  | AUTO_ACCESS  | 否 |  flase |flase关闭自动访问保活，true开启，需同时填写PROJECT_URL变量|
   | PORT         | 否 |  3000  |http服务监听端口，也是订阅端口     |
   | ARGO_PORT    | 否 |  8001  |argo隧道端口，固定隧道token需和cloudflare后台设置的一致|
   | UUID         | 否 | 89c13786-25aa-4520-b2e7-12cd60fb5202|UUID,使用哪吒v1在不同的平台部署需要修改|
