@@ -8,6 +8,9 @@
 
 nodejs-argo是一个强大的Argo隧道部署工具，专为PaaS平台和游戏玩具平台设计。它支持多种代理协议（VLESS、VMess、Trojan等），并集成了哪吒探针功能。
 
+---
+
+Telegram交流反馈群组：https://t.me/eooceu
 </div>
 
 ## 说明 （部署前请仔细阅读）
