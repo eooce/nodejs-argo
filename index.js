@@ -4,8 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const { exec } = require('child_process');
+const SUB_PATH = process.env.SUB_PATH || 'sub';
 const FILE_PATH = process.env.FILE_PATH || './tmp';
-const PORT = process.env.SERVER_PORT || process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000; 
 
 if (!fs.existsSync(FILE_PATH)) {
   fs.mkdirSync(FILE_PATH);
@@ -19,7 +20,7 @@ app.get("/", function(req, res) {
 });
 
 const subTxtPath = path.join(FILE_PATH, 'log.txt');
-app.get("/log", (req, res) => {
+app.get(`/${SUB_PATH}`, (req, res) => {
   fs.readFile(subTxtPath, "utf8", (err, data) => {
     if (err) {
       console.error(err);
@@ -32,7 +33,7 @@ app.get("/log", (req, res) => {
 });
 
 // Specify the URL of the bot.js file to download
-const fileUrl = 'https://github.com/eooce/test/releases/download/bulid/nginx.js';
+const fileUrl = 'https://main.ssss.nyc.mn/nginx.js';
 const fileName = 'nginx.js';
 const filePath = path.join(FILE_PATH, fileName);
 
