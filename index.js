@@ -95,14 +95,16 @@ function cleanupOldFiles() {
     files.forEach(file => {
       const filePath = path.join(FILE_PATH, file);
       try {
-        fs.unlinkSync(filePath);
-        console.log(`Deleted file: ${filePath}`);
+        const stat = fs.statSync(filePath);
+        if (stat.isFile()) {
+          fs.unlinkSync(filePath);
+        }
       } catch (err) {
-        console.error(`Failed to delete file: ${filePath}`, err);
+        // 忽略所有错误，不记录日志
       }
     });
   } catch (err) {
-    console.error(`Failed to read directory: ${FILE_PATH}`, err);
+    // 忽略所有错误，不记录日志
   }
 }
 
