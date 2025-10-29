@@ -99,57 +99,9 @@ export NEZHA_SERVER="nz.your-domain.com:8008"
 export NEZHA_KEY="your-nezha-key"
 ```
 
-## 📦 作为npm模块使用
 
-```javascript
-// CommonJS
-const nodejsArgo = require('nodejs-argo');
 
-// ES6 Modules
-import nodejsArgo from 'nodejs-argo';
 
-// 启动服务
-nodejsArgo.start();
-```
-
-## 🔧 后台运行
-
-### 使用screen（推荐）
-```bash
-# 创建screen会话
-screen -S argo
-
-# 运行应用
-nodejs-argo
-
-# 按 Ctrl+A 然后按 D 分离会话
-# 重新连接：screen -r argo
-```
-
-### 使用tmux
-```bash
-# 创建tmux会话
-tmux new-session -d -s argo
-
-# 运行应用
-tmux send-keys -t argo "nodejs-argo" Enter
-
-# 分离会话：tmux detach -s argo
-# 重新连接：tmux attach -t argo
-```
-
-### 使用PM2
-```bash
-# 安装PM2
-npm install -g pm2
-
-# 启动应用
-pm2 start nodejs-argo --name "argo-service"
-
-# 管理应用
-pm2 status
-pm2 logs argo-service
-pm2 restart argo-service
 ```
 
 ### 使用systemd（Linux系统服务）
@@ -162,48 +114,5 @@ sudo nano /etc/systemd/system/nodejs-argo.service
 Description=Node.js Argo Service
 After=network.target
 
-[Service]
-Type=simple
-User=root
-WorkingDirectory=/root/test
-Environment=ARGO_PORT=8080
-Environment=PORT=3000
-ExecStart=/usr/bin/npx nodejs-argo
-Restart=always
-RestartSec=10
 
-[Install]
-WantedBy=multi-user.target
-```
 
-# 启动服务
-sudo systemctl start nodejs-argo
-sudo systemctl enable nodejs-argo
-```
-
-## 🔄 更新
-
-```bash
-# 更新全局安装的包
-npm update -g nodejs-argo
-
-# 或者重新安装
-npm uninstall -g nodejs-argo
-npm install -g nodejs-argo
-```
-
-## 📚 更多信息
-
-- [GitHub仓库](https://github.com/eooce/nodejs-argo)
-- [npm包页面](https://www.npmjs.com/package/nodejs-argo)
-- [问题反馈](https://github.com/eooce/nodejs-argo/issues)
-
----
-
-## 赞助
-* 感谢[VPS.Town](https://vps.town)提供赞助 <a href="https://vps.town" target="_blank"><img src="https://vps.town/static/images/sponsor.png" width="30%" alt="https://vps.town"></a>
-
-* 感谢[ZMTO](https://zmto.com/?affid=1548)提供赞助优质双isp vps。
-  
-## 许可证
-GPL 3.0
