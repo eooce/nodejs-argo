@@ -1,0 +1,214 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build standalone executables (like JAR files)
+        run: |
+          # Install pkg globally
+          npm install -g pkg
+
+          # Create output directory
+          mkdir -p dist/binaries
+
+          # Build executables for different platforms
+          pkg . --targets node18-linux-x64,node18-macos-x64,node18-win-x64 --compress GZip --output dist/binaries/nodejs-argo
+
+          # Rename executables with proper extensions and version
+          cd dist/binaries
+          mv nodejs-argo-linux nodejs-argo-${{ steps.version.outputs.VERSION }}-linux-x64
+          mv nodejs-argo-macos nodejs-argo-${{ steps.version.outputs.VERSION }}-macos-x64
+          mv nodejs-argo-win.exe nodejs-argo-${{ steps.version.outputs.VERSION }}-windows-x64.exe
+
+          # Create checksums
+          sha256sum nodejs-argo-* > SHA256SUMS.txt
+
+          cd ../..
+
+      - name: Create distribution package
+        run: |
+          # Create source package
+          mkdir -p dist/source/nodejs-argo-${{ steps.version.outputs.VERSION }}
+          cp -r index.js package.json Dockerfile LICENSE README.md dist/source/nodejs-argo-${{ steps.version.outputs.VERSION }}/
+
+          cd dist/source
+          tar -czf ../nodejs-argo-${{ steps.version.outputs.VERSION }}-source.tar.gz nodejs-argo-${{ steps.version.outputs.VERSION }}
+          zip -r ../nodejs-argo-${{ steps.version.outputs.VERSION }}-source.zip nodejs-argo-${{ steps.version.outputs.VERSION }}
+          cd ../..
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat << 'EOF' > release_notes.md
+          ## 🚀 Release ${{ steps.version.outputs.VERSION }}
+
+          ### 📦 下载独立可执行文件（推荐 - 类似 JAR 使用方式）
+
+          **无需安装 Node.js 环境！** 下载对应平台的可执行文件即可直接运行：
+
+          #### Linux (x64)
+          ```bash
+          # 下载
+          wget https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/nodejs-argo-${{ steps.version.outputs.VERSION }}-linux-x64
+
+          # 添加执行权限
+          chmod +x nodejs-argo-${{ steps.version.outputs.VERSION }}-linux-x64
+
+          # 运行（类似 java -jar 的使用方式）
+          ./nodejs-argo-${{ steps.version.outputs.VERSION }}-linux-x64
+          ```
+
+          #### macOS (x64)
+          ```bash
+          # 下载
+          wget https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/nodejs-argo-${{ steps.version.outputs.VERSION }}-macos-x64
+
+          # 添加执行权限
+          chmod +x nodejs-argo-${{ steps.version.outputs.VERSION }}-macos-x64
+
+          # 运行
+          ./nodejs-argo-${{ steps.version.outputs.VERSION }}-macos-x64
+          ```
+
+          #### Windows (x64)
+          ```powershell
+          # 下载后直接双击运行，或在命令行执行：
+          .\nodejs-argo-${{ steps.version.outputs.VERSION }}-windows-x64.exe
+          ```
+
+          ### 🐳 使用 Docker
+          ```bash
+          docker pull ghcr.io/${{ github.repository_owner }}/nodejs:latest
+          docker run -d -p 3000:3000 \
+            -e UUID=your-uuid \
+            -e NEZHA_SERVER=your-server \
+            -e NEZHA_KEY=your-key \
+            -v $(pwd)/data:/tmp \
+            ghcr.io/${{ github.repository_owner }}/nodejs:latest
+          ```
+
+          ### 📝 使用源码安装
+          ```bash
+          # 下载并解压源码包
+          wget https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/nodejs-argo-${{ steps.version.outputs.VERSION }}-source.tar.gz
+          tar -xzf nodejs-argo-${{ steps.version.outputs.VERSION }}-source.tar.gz
+          cd nodejs-argo-${{ steps.version.outputs.VERSION }}
+
+          # 安装依赖并运行
+          npm install
+          npm start
+          ```
+
+          ### 🔧 Web 配置界面
+
+          **新功能！** 本版本支持通过 Web 界面配置环境变量：
+
+          1. 启动应用后访问：`http://localhost:3000/config`
+          2. 在 Web 界面修改环境变量
+          3. 保存配置到 `./tmp/.env` 文件
+          4. 重启应用使配置生效（配置会自动加载）
+
+          ### 📝 支持的环境变量
+
+          | 变量名 | 说明 |
+          |--------|------|
+          | `UUID` | 用户唯一标识（必填） |
+          | `NEZHA_SERVER` | 哪吒服务器地址 |
+          | `NEZHA_PORT` | 哪吒端口（v0 需要） |
+          | `NEZHA_KEY` | 哪吒密钥 |
+          | `ARGO_DOMAIN` | Argo 固定隧道域名 |
+          | `ARGO_AUTH` | Argo 认证信息 |
+          | `CFIP` | CF 优选 IP/域名 |
+          | `CFPORT` | CF 优选端口 |
+          | `UPLOAD_URL` | 节点上传地址 |
+          | `PROJECT_URL` | 项目 URL |
+          | `NAME` | 节点名称 |
+
+          ### 📂 Release 资产说明
+
+          - **独立可执行文件**：无需 Node.js 环境，下载即可运行（类似 JAR 包）
+            - `nodejs-argo-*-linux-x64` - Linux 64位可执行文件
+            - `nodejs-argo-*-macos-x64` - macOS 64位可执行文件
+            - `nodejs-argo-*-windows-x64.exe` - Windows 64位可执行文件
+          - **源码包**：需要 Node.js 环境
+            - `nodejs-argo-*-source.tar.gz` - 源码包（tar.gz）
+            - `nodejs-argo-*-source.zip` - 源码包（zip）
+          - **校验文件**：
+            - `SHA256SUMS.txt` - SHA256 校验和
+
+          ### 🔐 文件校验
+
+          下载后请验证 SHA256 校验和：
+          ```bash
+          sha256sum -c SHA256SUMS.txt
+          ```
+
+          ### 📚 更多信息
+
+          查看 [README.md](https://github.com/${{ github.repository }}) 了解详细使用说明。
+
+          ---
+
+          **注意**：独立可执行文件包含了完整的 Node.js 运行时和应用代码，文件较大（约 50-70MB），但使用最方便，无需任何依赖。
+          EOF
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            dist/binaries/nodejs-argo-${{ steps.version.outputs.VERSION }}-linux-x64
+            dist/binaries/nodejs-argo-${{ steps.version.outputs.VERSION }}-macos-x64
+            dist/binaries/nodejs-argo-${{ steps.version.outputs.VERSION }}-windows-x64.exe
+            dist/binaries/SHA256SUMS.txt
+            dist/nodejs-argo-${{ steps.version.outputs.VERSION }}-source.tar.gz
+            dist/nodejs-argo-${{ steps.version.outputs.VERSION }}-source.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update latest tag
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag -f latest
+          git push -f origin latest

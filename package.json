@@ -1,7 +1,7 @@
 {
   "name": "nodejs-argo",
-  "version": "1,0,0",
-  "description": "Thsi is a node project",
+  "version": "1.0.0",
+  "description": "Railway Node.js project with web configuration interface",
   "main": "index.js",
   "author": "eooce",
   "repository": "",
@@ -9,13 +9,30 @@
   "private": false,
   "scripts": {
     "dev": "node index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "pkg . --compress GZip",
+    "build:all": "pkg . --targets node18-linux-x64,node18-macos-x64,node18-win-x64 --compress GZip --output dist/nodejs-argo"
   },
   "dependencies": {
     "axios": "latest",
     "express": "^4.18.2"
   },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  },
   "engines": {
     "node": ">=14"
+  },
+  "pkg": {
+    "scripts": "index.js",
+    "assets": [
+      "package.json"
+    ],
+    "targets": [
+      "node18-linux-x64",
+      "node18-macos-x64",
+      "node18-win-x64"
+    ],
+    "outputPath": "dist"
   }
 }
