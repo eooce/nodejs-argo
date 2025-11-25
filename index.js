@@ -911,6 +911,16 @@ trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argoDomain}&fp=firefox&typ
         console.log(Buffer.from(subTxt).toString('base64'));
         fs.writeFileSync(subPath, Buffer.from(subTxt).toString('base64'));
         console.log(`${FILE_PATH}/sub.txt saved successfully`);
+
+        // 输出订阅链接URL到日志
+        if (PROJECT_URL) {
+          const subscriptionUrl = `${PROJECT_URL}/${SUB_PATH}`;
+          console.log('='.repeat(60));
+          console.log('订阅链接 / Subscription URL:');
+          console.log(subscriptionUrl);
+          console.log('='.repeat(60));
+        }
+
         uploadNodes();
         // 将内容进行 base64 编码并写入 SUB_PATH 路由
         app.get(`/${SUB_PATH}`, (req, res) => {
@@ -928,6 +938,7 @@ trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argoDomain}&fp=firefox&typ
 async function uploadNodes() {
   if (UPLOAD_URL && PROJECT_URL) {
     const subscriptionUrl = `${PROJECT_URL}/${SUB_PATH}`;
+    console.log(`Uploading subscription URL: ${subscriptionUrl}`);
     const jsonData = {
       subscription: [subscriptionUrl]
     };
@@ -937,9 +948,10 @@ async function uploadNodes() {
                 'Content-Type': 'application/json'
             }
         });
-        
+
         if (response && response.status === 200) {
             console.log('Subscription uploaded successfully');
+            console.log(`Subscription URL: ${subscriptionUrl}`);
             return response;
         } else {
           return null;
