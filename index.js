@@ -8,6 +8,98 @@ const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 const { execSync } = require('child_process');
 
+// 解析命令行参数
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const params = {};
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    // 支持 --port 8080 格式
+    if (arg.startsWith('--')) {
+      const key = arg.substring(2);
+      const value = args[i + 1];
+      if (value && !value.startsWith('--')) {
+        params[key] = value;
+        i++; // 跳过下一个参数
+      }
+    }
+    // 支持 -p 8080 格式
+    else if (arg.startsWith('-') && arg.length === 2) {
+      const shortKey = arg.substring(1);
+      const value = args[i + 1];
+      if (value && !value.startsWith('-')) {
+        // 映射短参数到完整参数名
+        const keyMap = {
+          'p': 'port',
+          'h': 'help'
+        };
+        const key = keyMap[shortKey] || shortKey;
+        params[key] = value;
+        i++;
+      } else if (shortKey === 'h') {
+        params['help'] = true;
+      }
+    }
+  }
+
+  return params;
+}
+
+// 显示帮助信息
+function showHelp() {
+  console.log(`
+Railway Node.js Application - 类似 JAR 包的使用方式
+
+使用方法:
+  ./nodejs-argo [选项]
+
+选项:
+  -p, --port <端口>          指定 Web 服务器端口 (默认: 3000)
+  -h, --help                显示帮助信息
+
+环境变量:
+  PORT / SERVER_PORT        服务器端口
+  UUID                      用户唯一标识
+  NEZHA_SERVER             哪吒服务器地址
+  NEZHA_KEY                哪吒密钥
+  ARGO_DOMAIN              Argo 域名
+  ... 更多环境变量请参考文档
+
+示例:
+  # 指定端口运行
+  ./nodejs-argo --port 8080
+  ./nodejs-argo -p 8080
+
+  # 使用环境变量
+  PORT=8080 UUID=your-uuid ./nodejs-argo
+
+  # 后台运行
+  nohup ./nodejs-argo --port 8080 > app.log 2>&1 &
+
+Web 配置界面:
+  启动后访问 http://localhost:<端口>/config 进行在线配置
+
+更多信息: https://github.com/YOUR_USERNAME/railway
+`);
+  process.exit(0);
+}
+
+// 解析命令行参数
+const cliArgs = parseArgs();
+
+// 显示帮助
+if (cliArgs.help) {
+  showHelp();
+}
+
+// 从命令行参数获取端口（优先级最高）
+if (cliArgs.port) {
+  process.env.PORT = cliArgs.port;
+  console.log(`使用命令行指定的端口: ${cliArgs.port}`);
+}
+
 // 从 .env 文件加载环境变量（如果存在）
 const FILE_PATH_TEMP = process.env.FILE_PATH || './tmp';
 const envFilePath = path.join(FILE_PATH_TEMP, '.env');
