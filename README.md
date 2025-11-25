@@ -4,16 +4,64 @@
 
 ## ✨ 主要功能
 
-- 🐳 **Docker 部署** - 支持自动构建和发布 Docker 镜像
+- 📦 **独立可执行文件** - 类似 JAR 包的使用方式，无需 Node.js 环境，下载即用
 - 🔧 **Web 配置界面** - 通过 Web 页面在线修改环境变量
-- 📦 **Release 发布** - 自动创建 GitHub Release 包
+- 🐳 **Docker 部署** - 支持自动构建和发布 Docker 镜像
 - 🚀 **哪吒监控** - 支持哪吒 v0 和 v1 版本
 - 🌐 **Argo 隧道** - 支持固定隧道和临时隧道
 - 📤 **节点上传** - 自动上传节点信息到订阅服务器
+- 🔄 **自动发布** - 推送标签自动构建跨平台可执行文件
 
 ## 🚀 快速开始
 
-### 使用 Docker (推荐)
+### 方式一：使用独立可执行文件（推荐 - 类似 JAR 使用方式）
+
+**无需安装 Node.js！** 下载对应平台的可执行文件即可直接运行：
+
+#### Linux / macOS
+
+```bash
+# 1. 下载最新版本的可执行文件
+# Linux
+wget https://github.com/YOUR_USERNAME/railway/releases/latest/download/nodejs-argo-v1.0.0-linux-x64
+
+# macOS
+wget https://github.com/YOUR_USERNAME/railway/releases/latest/download/nodejs-argo-v1.0.0-macos-x64
+
+# 2. 添加执行权限
+chmod +x nodejs-argo-v1.0.0-linux-x64  # 或 macos-x64
+
+# 3. 直接运行（类似 java -jar app.jar）
+./nodejs-argo-v1.0.0-linux-x64
+
+# 4. 后台运行
+nohup ./nodejs-argo-v1.0.0-linux-x64 > app.log 2>&1 &
+
+# 5. 设置环境变量运行
+UUID=your-uuid NEZHA_SERVER=nz.example.com:8008 ./nodejs-argo-v1.0.0-linux-x64
+```
+
+#### Windows
+
+```powershell
+# 1. 下载 nodejs-argo-v1.0.0-windows-x64.exe
+
+# 2. 双击运行，或在命令行中：
+.\nodejs-argo-v1.0.0-windows-x64.exe
+
+# 3. 设置环境变量运行
+$env:UUID="your-uuid"
+$env:NEZHA_SERVER="nz.example.com:8008"
+.\nodejs-argo-v1.0.0-windows-x64.exe
+```
+
+**优势**：
+- ✅ 无需安装 Node.js 环境
+- ✅ 单文件部署，简单方便
+- ✅ 跨平台支持（Linux、macOS、Windows）
+- ✅ 类似 JAR 包的使用体验
+
+### 方式二：使用 Docker
 
 ```bash
 docker pull ghcr.io/YOUR_USERNAME/nodejs:latest
@@ -22,10 +70,11 @@ docker run -d -p 3000:3000 \
   -e UUID=your-uuid \
   -e NEZHA_SERVER=nz.example.com:8008 \
   -e NEZHA_KEY=your-key \
+  -v $(pwd)/data:/tmp \
   ghcr.io/YOUR_USERNAME/nodejs:latest
 ```
 
-### 从源码运行
+### 方式三：从源码运行
 
 ```bash
 # 克隆仓库
@@ -250,7 +299,7 @@ npm run dev
 
 ### 自动发布
 
-推送标签时自动创建 Release：
+推送标签时自动创建 Release（会自动构建独立可执行文件）：
 
 ```bash
 git tag v1.0.0
@@ -261,12 +310,56 @@ git push origin v1.0.0
 
 在 GitHub Actions 页面手动触发 "Create Release" 工作流。
 
-### Release 包内容
+### Release 资产说明
 
-每个 Release 包含：
-- 源码包（tar.gz 和 zip 格式）
-- Docker 镜像链接
-- 详细的安装说明
+每个 Release 自动构建并包含以下资产：
+
+#### 🎯 独立可执行文件（推荐）
+**类似 JAR 包的使用方式，无需 Node.js 环境**
+
+- `nodejs-argo-v1.0.0-linux-x64` - Linux 64位可执行文件（约 50-70MB）
+- `nodejs-argo-v1.0.0-macos-x64` - macOS 64位可执行文件（约 50-70MB）
+- `nodejs-argo-v1.0.0-windows-x64.exe` - Windows 64位可执行文件（约 50-70MB）
+
+这些文件包含完整的 Node.js 运行时和应用代码，下载后可直接运行：
+
+```bash
+# Linux/macOS
+chmod +x nodejs-argo-v1.0.0-linux-x64
+./nodejs-argo-v1.0.0-linux-x64
+
+# Windows
+nodejs-argo-v1.0.0-windows-x64.exe
+```
+
+#### 📦 源码包
+- `nodejs-argo-v1.0.0-source.tar.gz` - 源码压缩包（tar.gz）
+- `nodejs-argo-v1.0.0-source.zip` - 源码压缩包（zip）
+
+#### 🔐 校验文件
+- `SHA256SUMS.txt` - 所有可执行文件的 SHA256 校验和
+
+#### 🐳 其他资源
+- Docker 镜像：`ghcr.io/YOUR_USERNAME/nodejs:latest`
+- 详细的安装和使用说明
+
+### 构建原理
+
+独立可执行文件使用 [pkg](https://github.com/vercel/pkg) 工具构建，它将 Node.js 应用和运行时打包成单个二进制文件。
+
+**本地构建**：
+```bash
+# 安装依赖
+npm install
+
+# 构建所有平台的可执行文件
+npm run build:all
+
+# 构建特定平台
+npm run build
+```
+
+构建后的文件位于 `dist/` 目录。
 
 ## 🛠️ 故障排除
 
