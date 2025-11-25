@@ -167,30 +167,110 @@ public class ServerService {
             log.put("loglevel", "none");
             config.put("log", log);
 
-            // Inbounds configuration
+            // Inbounds configuration - 需要 5 个 inbound！
             List<Map<String, Object>> inbounds = new ArrayList<>();
 
-            // Main inbound
+            // 1. Main inbound (ARGO_PORT) with fallbacks
             Map<String, Object> mainInbound = new HashMap<>();
             mainInbound.put("port", appConfig.getArgoPort());
             mainInbound.put("protocol", "vless");
 
-            Map<String, Object> settings = new HashMap<>();
-            List<Map<String, String>> clients = new ArrayList<>();
-            Map<String, String> client = new HashMap<>();
-            client.put("id", appConfig.getUuid());
-            client.put("flow", "xtls-rprx-vision");
-            clients.add(client);
-            settings.put("clients", clients);
-            settings.put("decryption", "none");
+            Map<String, Object> mainSettings = new HashMap<>();
+            List<Map<String, Object>> mainClients = new ArrayList<>();
+            Map<String, Object> mainClient = new HashMap<>();
+            mainClient.put("id", appConfig.getUuid());
+            mainClient.put("flow", "xtls-rprx-vision");
+            mainClients.add(mainClient);
+            mainSettings.put("clients", mainClients);
+            mainSettings.put("decryption", "none");
 
-            mainInbound.put("settings", settings);
+            // Fallbacks configuration
+            List<Map<String, Object>> fallbacks = new ArrayList<>();
+            fallbacks.add(Map.of("dest", 3001));
+            fallbacks.add(Map.of("path", "/vless-argo", "dest", 3002));
+            fallbacks.add(Map.of("path", "/vmess-argo", "dest", 3003));
+            fallbacks.add(Map.of("path", "/trojan-argo", "dest", 3004));
+            mainSettings.put("fallbacks", fallbacks);
 
-            Map<String, String> streamSettings = new HashMap<>();
-            streamSettings.put("network", "tcp");
-            mainInbound.put("streamSettings", streamSettings);
-
+            mainInbound.put("settings", mainSettings);
+            mainInbound.put("streamSettings", Map.of("network", "tcp"));
             inbounds.add(mainInbound);
+
+            // 2. VLESS TCP inbound (3001)
+            Map<String, Object> vlessTcp = new HashMap<>();
+            vlessTcp.put("port", 3001);
+            vlessTcp.put("listen", "127.0.0.1");
+            vlessTcp.put("protocol", "vless");
+            vlessTcp.put("settings", Map.of(
+                "clients", List.of(Map.of("id", appConfig.getUuid())),
+                "decryption", "none"
+            ));
+            vlessTcp.put("streamSettings", Map.of(
+                "network", "tcp",
+                "security", "none"
+            ));
+            inbounds.add(vlessTcp);
+
+            // 3. VLESS WebSocket inbound (3002)
+            Map<String, Object> vlessWs = new HashMap<>();
+            vlessWs.put("port", 3002);
+            vlessWs.put("listen", "127.0.0.1");
+            vlessWs.put("protocol", "vless");
+            vlessWs.put("settings", Map.of(
+                "clients", List.of(Map.of("id", appConfig.getUuid(), "level", 0)),
+                "decryption", "none"
+            ));
+            vlessWs.put("streamSettings", Map.of(
+                "network", "ws",
+                "security", "none",
+                "wsSettings", Map.of("path", "/vless-argo")
+            ));
+            vlessWs.put("sniffing", Map.of(
+                "enabled", true,
+                "destOverride", List.of("http", "tls", "quic"),
+                "metadataOnly", false
+            ));
+            inbounds.add(vlessWs);
+
+            // 4. VMess WebSocket inbound (3003)
+            Map<String, Object> vmessWs = new HashMap<>();
+            vmessWs.put("port", 3003);
+            vmessWs.put("listen", "127.0.0.1");
+            vmessWs.put("protocol", "vmess");
+            vmessWs.put("settings", Map.of(
+                "clients", List.of(Map.of("id", appConfig.getUuid(), "alterId", 0))
+            ));
+            vmessWs.put("streamSettings", Map.of(
+                "network", "ws",
+                "wsSettings", Map.of("path", "/vmess-argo")
+            ));
+            vmessWs.put("sniffing", Map.of(
+                "enabled", true,
+                "destOverride", List.of("http", "tls", "quic"),
+                "metadataOnly", false
+            ));
+            inbounds.add(vmessWs);
+
+            // 5. Trojan WebSocket inbound (3004)
+            Map<String, Object> trojanWs = new HashMap<>();
+            trojanWs.put("port", 3004);
+            trojanWs.put("listen", "127.0.0.1");
+            trojanWs.put("protocol", "trojan");
+            trojanWs.put("settings", Map.of(
+                "clients", List.of(Map.of("password", appConfig.getUuid()))
+            ));
+            trojanWs.put("streamSettings", Map.of(
+                "network", "ws",
+                "security", "none",
+                "wsSettings", Map.of("path", "/trojan-argo")
+            ));
+            trojanWs.put("sniffing", Map.of(
+                "enabled", true,
+                "destOverride", List.of("http", "tls", "quic"),
+                "metadataOnly", false
+            ));
+            inbounds.add(trojanWs);
+
             config.put("inbounds", inbounds);
 
             // DNS configuration
