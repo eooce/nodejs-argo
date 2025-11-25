@@ -1,6 +1,7 @@
 package com.railway.app.controller;
 
 import com.railway.app.config.AppConfig;
+import com.railway.app.service.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 配置管理控制器
@@ -24,6 +26,9 @@ public class ConfigController {
 
     @Autowired
     private AppConfig appConfig;
+
+    @Autowired
+    private ServerService serverService;
 
     /**
      * 根路由
@@ -94,9 +99,19 @@ public class ConfigController {
             // 保存到 .env 文件
             appConfig.saveToEnvFile(props);
 
+            // 异步重启服务（避免阻塞响应）
+            CompletableFuture.runAsync(() -> {
+                try {
+                    Thread.sleep(1000); // 延迟1秒后重启
+                    serverService.restartServices();
+                } catch (Exception e) {
+                    System.err.println("Error restarting services: " + e.getMessage());
+                }
+            });
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "配置已保存！请重启容器使配置生效。");
+            response.put("message", "配置已保存！服务正在重新启动，请稍候...");
             response.put("saved", config);
 
             return ResponseEntity.ok(response);
