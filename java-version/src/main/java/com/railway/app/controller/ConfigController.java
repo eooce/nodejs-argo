@@ -39,6 +39,32 @@ public class ConfigController {
     }
 
     /**
+     * 订阅路由
+     */
+    @GetMapping(value = "/{subPath}", produces = "text/plain; charset=utf-8")
+    public ResponseEntity<String> subscription(@PathVariable String subPath) {
+        // 检查是否匹配配置的订阅路径
+        if (!subPath.equals(appConfig.getSubPath())) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            // 读取订阅文件
+            Path subscriptionFile = Paths.get(appConfig.getFilePath(), "sub.txt");
+            if (Files.exists(subscriptionFile)) {
+                String content = Files.readString(subscriptionFile);
+                return ResponseEntity.ok()
+                    .header("Content-Type", "text/plain; charset=utf-8")
+                    .body(content);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
      * 配置页面路由
      */
     @GetMapping(value = "/config", produces = MediaType.TEXT_HTML_VALUE)
