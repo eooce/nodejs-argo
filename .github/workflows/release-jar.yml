@@ -1,0 +1,198 @@
+name: Build and Release JAR
+
+on:
+  push:
+    tags:
+      - 'v*-java'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0-java)'
+        required: true
+        default: 'v1.0.0-java'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build JAR with Maven
+        run: |
+          cd java-version
+          mvn clean package -DskipTests -B
+
+          # Create distribution directory
+          mkdir -p ../dist/jar
+
+          # Copy JAR file
+          cp target/*.jar ../dist/jar/nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
+
+          # Create checksums
+          cd ../dist/jar
+          sha256sum *.jar > SHA256SUMS.txt
+
+      - name: Create source package
+        run: |
+          mkdir -p dist/source/nodejs-argo-java-${{ steps.version.outputs.VERSION }}
+          cp -r java-version/* dist/source/nodejs-argo-java-${{ steps.version.outputs.VERSION }}/
+
+          cd dist/source
+          tar -czf ../nodejs-argo-java-${{ steps.version.outputs.VERSION }}-source.tar.gz nodejs-argo-java-${{ steps.version.outputs.VERSION }}
+          zip -r ../nodejs-argo-java-${{ steps.version.outputs.VERSION }}-source.zip nodejs-argo-java-${{ steps.version.outputs.VERSION }}
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat << 'EOF' > release_notes.md
+          ## 🚀 Release ${{ steps.version.outputs.VERSION }} (Java 版本)
+
+          ### 📦 下载 JAR 文件（推荐）
+
+          **需要 Java 17 或更高版本！**
+
+          #### 快速开始
+
+          ```bash
+          # 下载 JAR 文件
+          wget https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
+
+          # 基本运行
+          java -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
+
+          # 指定 JVM 参数和端口（类似容器启动方式）
+          java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar --port 8080
+
+          # 使用环境变量
+          UUID=your-uuid NEZHA_SERVER=your-server java -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
+
+          # 后台运行
+          nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar --port 8080 > app.log 2>&1 &
+          ```
+
+          ### 🐳 使用 Docker
+
+          ```bash
+          docker pull ghcr.io/${{ github.repository_owner }}/nodejs-java:latest
+          docker run -d -p 3000:3000 \
+            -e UUID=your-uuid \
+            -e NEZHA_SERVER=your-server \
+            -e NEZHA_KEY=your-key \
+            -v $(pwd)/data:/tmp \
+            ghcr.io/${{ github.repository_owner }}/nodejs-java:latest
+          ```
+
+          ### 📝 从源码构建
+
+          ```bash
+          # 下载并解压源码包
+          wget https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/nodejs-argo-java-${{ steps.version.outputs.VERSION }}-source.tar.gz
+          tar -xzf nodejs-argo-java-${{ steps.version.outputs.VERSION }}-source.tar.gz
+          cd nodejs-argo-java-${{ steps.version.outputs.VERSION }}
+
+          # 使用 Maven 构建并运行
+          mvn clean package
+          java -jar target/nodejs-argo-1.0.0.jar
+          ```
+
+          ### 🔧 Web 配置界面
+
+          **新功能！** 本版本支持通过 Web 界面配置环境变量：
+
+          1. 启动应用后访问：`http://localhost:3000/config`
+          2. 在 Web 界面修改环境变量
+          3. 保存配置到 `./tmp/.env` 文件
+          4. 重启应用使配置生效（配置会自动加载）
+
+          ### 📝 支持的环境变量
+
+          | 变量名 | 说明 |
+          |--------|------|
+          | `UUID` | 用户唯一标识（必填） |
+          | `NEZHA_SERVER` | 哪吒服务器地址 |
+          | `NEZHA_PORT` | 哪吒端口（v0 需要） |
+          | `NEZHA_KEY` | 哪吒密钥 |
+          | `ARGO_DOMAIN` | Argo 固定隧道域名 |
+          | `ARGO_AUTH` | Argo 认证信息 |
+          | `CFIP` | CF 优选 IP/域名 |
+          | `CFPORT` | CF 优选端口 |
+          | `UPLOAD_URL` | 节点上传地址 |
+          | `PROJECT_URL` | 项目 URL |
+          | `NAME` | 节点名称 |
+
+          ### 📂 Release 资产说明
+
+          - **JAR 文件**：Spring Boot 可执行 JAR，需要 Java 17+ 环境
+            - `nodejs-argo-*-java.jar` - Java 可执行 JAR 文件
+          - **源码包**：需要 Maven 和 Java 环境
+            - `nodejs-argo-java-*-source.tar.gz` - 源码包（tar.gz）
+            - `nodejs-argo-java-*-source.zip` - 源码包（zip）
+          - **校验文件**：
+            - `SHA256SUMS.txt` - SHA256 校验和
+
+          ### 🔐 文件校验
+
+          下载后请验证 SHA256 校验和：
+          ```bash
+          sha256sum -c SHA256SUMS.txt
+          ```
+
+          ### ☕ JVM 参数说明
+
+          推荐的 JVM 参数（类似容器启动方式）：
+
+          ```bash
+          java -Xms128M -XX:MaxRAMPercentage=85.0 \
+               -Djava.security.egd=file:/dev/./urandom \
+               -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
+          ```
+
+          - `-Xms128M`: 设置初始堆内存为 128MB
+          - `-XX:MaxRAMPercentage=85.0`: 设置最大使用 RAM 的百分比为 85%
+          - `-Djava.security.egd=file:/dev/./urandom`: 加快启动速度
+
+          ### 📚 更多信息
+
+          查看 [Java README](https://github.com/${{ github.repository }}/tree/main/java-version) 了解详细使用说明。
+
+          ---
+
+          **注意**：此版本是 Java Spring Boot 实现，需要 Java 17 或更高版本。如果你不想安装 Java，请使用 [Node.js 版本](https://github.com/${{ github.repository }}/releases)的独立可执行文件。
+          EOF
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.version.outputs.VERSION }} (Java)
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            dist/jar/nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
+            dist/jar/SHA256SUMS.txt
+            dist/nodejs-argo-java-${{ steps.version.outputs.VERSION }}-source.tar.gz
+            dist/nodejs-argo-java-${{ steps.version.outputs.VERSION }}-source.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
