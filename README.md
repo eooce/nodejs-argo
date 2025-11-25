@@ -34,11 +34,18 @@ chmod +x nodejs-argo-v1.0.0-linux-x64  # 或 macos-x64
 # 3. 直接运行（类似 java -jar app.jar）
 ./nodejs-argo-v1.0.0-linux-x64
 
-# 4. 后台运行
-nohup ./nodejs-argo-v1.0.0-linux-x64 > app.log 2>&1 &
+# 4. 指定端口运行（类似 java -jar app.jar --server.port=8080）
+./nodejs-argo-v1.0.0-linux-x64 --port 8080
+./nodejs-argo-v1.0.0-linux-x64 -p 8080
 
-# 5. 设置环境变量运行
-UUID=your-uuid NEZHA_SERVER=nz.example.com:8008 ./nodejs-argo-v1.0.0-linux-x64
+# 5. 查看帮助信息
+./nodejs-argo-v1.0.0-linux-x64 --help
+
+# 6. 后台运行
+nohup ./nodejs-argo-v1.0.0-linux-x64 --port 8080 > app.log 2>&1 &
+
+# 7. 组合使用环境变量和命令行参数
+UUID=your-uuid NEZHA_SERVER=nz.example.com:8008 ./nodejs-argo-v1.0.0-linux-x64 --port 8080
 ```
 
 #### Windows
@@ -49,10 +56,17 @@ UUID=your-uuid NEZHA_SERVER=nz.example.com:8008 ./nodejs-argo-v1.0.0-linux-x64
 # 2. 双击运行，或在命令行中：
 .\nodejs-argo-v1.0.0-windows-x64.exe
 
-# 3. 设置环境变量运行
+# 3. 指定端口运行
+.\nodejs-argo-v1.0.0-windows-x64.exe --port 8080
+.\nodejs-argo-v1.0.0-windows-x64.exe -p 8080
+
+# 4. 查看帮助信息
+.\nodejs-argo-v1.0.0-windows-x64.exe --help
+
+# 5. 组合使用环境变量和命令行参数
 $env:UUID="your-uuid"
 $env:NEZHA_SERVER="nz.example.com:8008"
-.\nodejs-argo-v1.0.0-windows-x64.exe
+.\nodejs-argo-v1.0.0-windows-x64.exe --port 8080
 ```
 
 **优势**：
@@ -60,6 +74,20 @@ $env:NEZHA_SERVER="nz.example.com:8008"
 - ✅ 单文件部署，简单方便
 - ✅ 跨平台支持（Linux、macOS、Windows）
 - ✅ 类似 JAR 包的使用体验
+- ✅ 支持命令行参数和环境变量配置
+
+#### 命令行参数说明
+
+| 参数 | 简写 | 说明 | 示例 |
+|------|------|------|------|
+| `--port` | `-p` | 指定 Web 服务器端口 | `--port 8080` |
+| `--help` | `-h` | 显示帮助信息 | `--help` |
+
+**配置优先级**（从高到低）：
+1. 命令行参数（`--port 8080`）
+2. 环境变量（`PORT=8080`）
+3. .env 文件配置
+4. 默认值（3000）
 
 ### 方式二：使用 Docker
 
