@@ -25,22 +25,21 @@ wget https://github.com/YOUR_USERNAME/railway/releases/latest/download/nodejs-ar
 # 基本运行
 java -jar nodejs-argo-1.0.0.jar
 
-# 指定 JVM 参数和端口（类似容器启动方式）
-java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-1.0.0.jar --port 8080
+# 指定 JVM 参数（类似容器启动方式）
+java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-1.0.0.jar
 
-# 使用环境变量
-UUID=your-uuid NEZHA_SERVER=nz.example.com:8008 java -jar nodejs-argo-1.0.0.jar
+# 使用环境变量指定端口和配置
+SERVER_PORT=8080 UUID=your-uuid NEZHA_SERVER=nz.example.com:8008 java -jar nodejs-argo-1.0.0.jar
 
 # 后台运行
-nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-1.0.0.jar --port 8080 > app.log 2>&1 &
+nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-1.0.0.jar > app.log 2>&1 &
 ```
 
 #### 命令行参数说明
 
-| 参数 | 简写 | 说明 | 示例 |
-|------|------|------|------|
-| `--port` | `-p` | 指定 Web 服务器端口 | `--port 8080` |
-| `--help` | `-h` | 显示帮助信息 | `--help` |
+| 参数 | 简写 | 说明 |
+|------|------|------|
+| `--help` | `-h` | 显示帮助信息 |
 
 #### JVM 参数说明
 
@@ -50,12 +49,12 @@ nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-1.0.0.jar --port 
 | `-Xmx` | 设置最大堆内存 | `-Xmx512M` |
 | `-XX:MaxRAMPercentage` | 设置最大使用 RAM 的百分比 | `-XX:MaxRAMPercentage=85.0` |
 
-**配置优先级**（从高到低）：
-1. 命令行参数（`--port 8080`）
-2. 系统属性（`-Dserver.port=8080`）
-3. 环境变量（`SERVER_PORT=8080` 或 `PORT=8080`）
-4. .env 文件配置
-5. 默认值（3000）
+**端口配置优先级**（从高到低）：
+1. 环境变量（`SERVER_PORT=8080` 或 `PORT=8080`）
+2. .env 文件配置
+3. 默认值（3000）
+
+**注意**：端口无法通过命令行参数指定，只能通过环境变量或 .env 文件配置。
 
 ### 方式二：从源码构建
 

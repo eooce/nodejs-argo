@@ -84,15 +84,6 @@ public class AppConfig {
             }
         }
 
-        // 从 server.port 系统属性获取端口（命令行参数优先级最高）
-        String sysPort = System.getProperty("server.port");
-        if (sysPort != null && !sysPort.isEmpty()) {
-            try {
-                this.port = Integer.parseInt(sysPort);
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid port number: " + sysPort);
-            }
-        }
 
         loadEnvVar("UPLOAD_URL", this::setUploadUrl);
         loadEnvVar("PROJECT_URL", this::setProjectUrl);

@@ -81,14 +81,14 @@ jobs:
           # 基本运行
           java -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
 
-          # 指定 JVM 参数和端口（类似容器启动方式）
-          java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar --port 8080
+          # 指定 JVM 参数（类似容器启动方式）
+          java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
 
-          # 使用环境变量
-          UUID=your-uuid NEZHA_SERVER=your-server java -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
+          # 使用环境变量指定端口和配置
+          SERVER_PORT=8080 UUID=your-uuid NEZHA_SERVER=your-server java -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar
 
           # 后台运行
-          nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar --port 8080 > app.log 2>&1 &
+          nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar > app.log 2>&1 &
           ```
 
           ### 📝 从源码构建
