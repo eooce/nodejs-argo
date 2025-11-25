@@ -1,0 +1,126 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create distribution package
+        run: |
+          mkdir -p dist/nodejs-argo-${{ steps.version.outputs.VERSION }}
+          cp -r index.js package.json Dockerfile LICENSE README.md dist/nodejs-argo-${{ steps.version.outputs.VERSION }}/
+          cd dist
+          tar -czf nodejs-argo-${{ steps.version.outputs.VERSION }}.tar.gz nodejs-argo-${{ steps.version.outputs.VERSION }}
+          zip -r nodejs-argo-${{ steps.version.outputs.VERSION }}.zip nodejs-argo-${{ steps.version.outputs.VERSION }}
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat << 'EOF' > release_notes.md
+          ## 🚀 Release ${{ steps.version.outputs.VERSION }}
+
+          ### 📦 安装方式
+
+          #### 使用 Docker (推荐)
+          ```bash
+          docker pull ghcr.io/${{ github.repository_owner }}/nodejs:latest
+          docker run -d -p 3000:3000 \
+            -e UUID=your-uuid \
+            -e NEZHA_SERVER=your-server \
+            -e NEZHA_KEY=your-key \
+            ghcr.io/${{ github.repository_owner }}/nodejs:latest
+          ```
+
+          #### 使用源码
+          ```bash
+          # 下载并解压
+          wget https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.VERSION }}/nodejs-argo-${{ steps.version.outputs.VERSION }}.tar.gz
+          tar -xzf nodejs-argo-${{ steps.version.outputs.VERSION }}.tar.gz
+          cd nodejs-argo-${{ steps.version.outputs.VERSION }}
+
+          # 安装依赖并运行
+          npm install
+          npm start
+          ```
+
+          ### 🔧 Web 配置界面
+
+          本版本支持通过 Web 界面配置环境变量：
+
+          1. 部署成功后访问：`http://your-domain:3000/config`
+          2. 在 Web 界面修改环境变量
+          3. 保存配置后重启容器使配置生效
+
+          ### 📝 支持的环境变量
+
+          - `UPLOAD_URL` - 节点上传地址
+          - `PROJECT_URL` - 项目 URL
+          - `UUID` - 用户唯一标识
+          - `NEZHA_SERVER` - 哪吒服务器地址
+          - `NEZHA_PORT` - 哪吒端口
+          - `NEZHA_KEY` - 哪吒密钥
+          - `ARGO_DOMAIN` - Argo 域名
+          - `ARGO_AUTH` - Argo 认证
+          - `CFIP` - CF 优选 IP
+          - `CFPORT` - CF 优选端口
+          - `NAME` - 节点名称
+
+          ### 📚 更多信息
+
+          查看 [README.md](https://github.com/${{ github.repository }}) 了解详细使用说明。
+          EOF
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            dist/nodejs-argo-${{ steps.version.outputs.VERSION }}.tar.gz
+            dist/nodejs-argo-${{ steps.version.outputs.VERSION }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update latest tag
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag -f latest
+          git push -f origin latest
