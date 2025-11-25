@@ -543,14 +543,9 @@ public class ServerService {
         String vmessJson = objectMapper.writeValueAsString(vmess);
         String vmessLink = "vmess://" + Base64.getEncoder().encodeToString(vmessJson.getBytes());
 
-        // Generate subscription content
-        String subTxt = String.format("""
-            vless://%s@%s:%s?encryption=none&security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%%2Fvless-argo%%3Fed%%3D2560#%s
-
-            %s
-
-            trojan://%s@%s:%s?security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%%2Ftrojan-argo%%3Fed%%3D2560#%s
-            """,
+        // Generate subscription content (与 Node.js 格式完全一致)
+        // 注意：格式必须与 Node.js 一致，包括换行和空格
+        String subTxt = String.format("\nvless://%s@%s:%s?encryption=none&security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%%2Fvless-argo%%3Fed%%3D2560#%s\n  \n%s\n  \ntrojan://%s@%s:%s?security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%%2Ftrojan-argo%%3Fed%%3D2560#%s\n    ",
             appConfig.getUuid(), appConfig.getCfip(), appConfig.getCfport(), argoDomain, argoDomain, nodeName,
             vmessLink,
             appConfig.getUuid(), appConfig.getCfip(), appConfig.getCfport(), argoDomain, argoDomain, nodeName
