@@ -6,9 +6,9 @@
 
 - 📦 **标准 JAR 包** - 使用 `java -jar` 命令运行，完全的 Java 生态体验
 - 🔧 **Web 配置界面** - 通过 Web 页面在线修改环境变量
-- 🐳 **Docker 部署** - 支持自动构建和发布 Docker 镜像
 - 🚀 **Spring Boot** - 基于 Spring Boot 3.x 框架，性能优异
 - ☕ **Java 17+** - 使用现代 Java 特性
+- 🔄 **自动发布** - 推送标签自动构建和发布 JAR 文件
 
 ## 🚀 快速开始
 
@@ -57,20 +57,7 @@ nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-1.0.0.jar --port 
 4. .env 文件配置
 5. 默认值（3000）
 
-### 方式二：使用 Docker
-
-```bash
-docker pull ghcr.io/YOUR_USERNAME/nodejs-java:latest
-
-docker run -d -p 3000:3000 \
-  -e UUID=your-uuid \
-  -e NEZHA_SERVER=nz.example.com:8008 \
-  -e NEZHA_KEY=your-key \
-  -v $(pwd)/data:/tmp \
-  ghcr.io/YOUR_USERNAME/nodejs-java:latest
-```
-
-### 方式三：从源码构建
+### 方式二：从源码构建
 
 #### 前提条件
 - Java 17 或更高版本
@@ -134,41 +121,6 @@ NAME=MyNode
 ```
 
 **注意**：通过 Web 配置界面保存的配置会自动写入此文件。
-
-## 🐳 Docker 部署
-
-### 构建镜像
-
-```bash
-cd java-version
-docker build -t nodejs-argo-java .
-```
-
-### 使用 docker-compose
-
-创建 `docker-compose.yml`：
-
-```yaml
-version: '3'
-services:
-  nodejs-argo-java:
-    image: ghcr.io/YOUR_USERNAME/nodejs-java:latest
-    ports:
-      - "3000:3000"
-    environment:
-      - UUID=your-uuid
-      - NEZHA_SERVER=nz.example.com:8008
-      - NEZHA_KEY=your-key
-      - NAME=MyNode
-    volumes:
-      - ./data:/tmp
-    restart: unless-stopped
-```
-
-运行：
-```bash
-docker-compose up -d
-```
 
 ## 📦 API 端点
 
@@ -243,7 +195,6 @@ java-version/
 │       └── resources/
 │           └── application.properties                # Spring Boot 配置
 ├── pom.xml                                           # Maven 配置
-├── Dockerfile                                        # Docker 构建文件
 └── README.md                                         # 项目文档
 ```
 
@@ -295,9 +246,14 @@ ls -lh target/nodejs-argo-1.0.0.jar
 | 运行环境 | 需要 Node.js | 需要 Java 17+ |
 | 包格式 | 独立可执行文件 (pkg) | JAR 文件 |
 | 运行命令 | `./nodejs-argo` | `java -jar nodejs-argo.jar` |
-| 内存管理 | Node.js 自动管理 | JVM 参数控制 |
+| 内存管理 | Node.js 自动管理 | JVM 参数控制（-Xms, -Xmx等） |
+| Docker 支持 | ✅ 有 Docker 镜像 | ❌ 仅提供 JAR 文件 |
 | 配置方式 | 完全相同 | 完全相同 |
 | Web 界面 | 完全相同 | 完全相同 |
+
+**推荐使用场景**：
+- **Node.js 版本**：需要 Docker 部署，或者不想安装 Java 环境
+- **Java 版本**：已有 Java 环境，或者需要精细的 JVM 参数调优
 
 ## 🤝 贡献
 
@@ -311,5 +267,8 @@ MIT License
 
 - [Spring Boot](https://spring.io/projects/spring-boot)
 - [Maven](https://maven.apache.org/)
-- [Docker](https://www.docker.com/)
-- [原 Node.js 版本](../README.md)
+- [原 Node.js 版本](../README.md)（包含 Docker 镜像发布）
+
+## 💡 说明
+
+此 Java 版本专注于提供标准 JAR 文件发布。如果需要 Docker 部署，请使用原 Node.js 版本，它包含完整的 Docker 支持和自动构建工作流。

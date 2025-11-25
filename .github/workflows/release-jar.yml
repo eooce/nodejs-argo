@@ -91,18 +91,6 @@ jobs:
           nohup java -Xms128M -XX:MaxRAMPercentage=85.0 -jar nodejs-argo-${{ steps.version.outputs.VERSION }}.jar --port 8080 > app.log 2>&1 &
           ```
 
-          ### 🐳 使用 Docker
-
-          ```bash
-          docker pull ghcr.io/${{ github.repository_owner }}/nodejs-java:latest
-          docker run -d -p 3000:3000 \
-            -e UUID=your-uuid \
-            -e NEZHA_SERVER=your-server \
-            -e NEZHA_KEY=your-key \
-            -v $(pwd)/data:/tmp \
-            ghcr.io/${{ github.repository_owner }}/nodejs-java:latest
-          ```
-
           ### 📝 从源码构建
 
           ```bash
