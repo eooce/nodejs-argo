@@ -23,7 +23,7 @@ import java.util.Properties;
 public class AppConfig {
 
     // HTTP 服务端口
-    private int port = 3000;
+    private int port = 20205;
 
     // 文件路径配置
     private String filePath = "./tmp";
