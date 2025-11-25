@@ -630,7 +630,7 @@ app.post("/api/config", function(req, res) {
 
     // 生成 .env 文件内容
     const envContent = Object.entries(config)
-      .map(([key, value]) => \`\${key}=\${value}\`)
+      .map(([key, value]) => `\${key}=\${value}`)
       .join('\\n');
 
     // 保存到 .env 文件
