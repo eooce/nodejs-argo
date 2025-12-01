@@ -54,6 +54,11 @@ public class AppConfig {
     // 节点名称
     private String name = "";
 
+    // WebSocket 路径配置（可通过环境变量修改）
+    private String vlessPath = "/vless-argo";
+    private String vmessPath = "/vmess-argo";
+    private String trojanPath = "/trojan-argo";
+
     @PostConstruct
     public void init() {
         // 从系统环境变量加载配置
@@ -98,6 +103,9 @@ public class AppConfig {
         loadEnvVar("CFIP", this::setCfip);
         loadEnvVar("CFPORT", this::setCfport);
         loadEnvVar("NAME", this::setName);
+        loadEnvVar("VLESS_PATH", this::setVlessPath);
+        loadEnvVar("VMESS_PATH", this::setVmessPath);
+        loadEnvVar("TROJAN_PATH", this::setTrojanPath);
 
         String autoAccessEnv = System.getenv("AUTO_ACCESS");
         if (autoAccessEnv != null && !autoAccessEnv.isEmpty()) {
