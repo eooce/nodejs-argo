@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -187,9 +189,9 @@ public class ServerService {
             // Fallbacks configuration
             List<Map<String, Object>> fallbacks = new ArrayList<>();
             fallbacks.add(Map.of("dest", 3001));
-            fallbacks.add(Map.of("path", "/vless-argo", "dest", 3002));
-            fallbacks.add(Map.of("path", "/vmess-argo", "dest", 3003));
-            fallbacks.add(Map.of("path", "/trojan-argo", "dest", 3004));
+            fallbacks.add(Map.of("path", appConfig.getVlessPath(), "dest", 3002));
+            fallbacks.add(Map.of("path", appConfig.getVmessPath(), "dest", 3003));
+            fallbacks.add(Map.of("path", appConfig.getTrojanPath(), "dest", 3004));
             mainSettings.put("fallbacks", fallbacks);
 
             mainInbound.put("settings", mainSettings);
@@ -223,7 +225,7 @@ public class ServerService {
             vlessWs.put("streamSettings", Map.of(
                 "network", "ws",
                 "security", "none",
-                "wsSettings", Map.of("path", "/vless-argo")
+                "wsSettings", Map.of("path", appConfig.getVlessPath())
             ));
             vlessWs.put("sniffing", Map.of(
                 "enabled", true,
@@ -242,7 +244,7 @@ public class ServerService {
             ));
             vmessWs.put("streamSettings", Map.of(
                 "network", "ws",
-                "wsSettings", Map.of("path", "/vmess-argo")
+                "wsSettings", Map.of("path", appConfig.getVmessPath())
             ));
             vmessWs.put("sniffing", Map.of(
                 "enabled", true,
@@ -262,7 +264,7 @@ public class ServerService {
             trojanWs.put("streamSettings", Map.of(
                 "network", "ws",
                 "security", "none",
-                "wsSettings", Map.of("path", "/trojan-argo")
+                "wsSettings", Map.of("path", appConfig.getTrojanPath())
             ));
             trojanWs.put("sniffing", Map.of(
                 "enabled", true,
@@ -614,7 +616,7 @@ public class ServerService {
         vmess.put("net", "ws");
         vmess.put("type", "none");
         vmess.put("host", argoDomain);
-        vmess.put("path", "/vmess-argo?ed=2560");
+        vmess.put("path", appConfig.getVmessPath() + "?ed=2560");
         vmess.put("tls", "tls");
         vmess.put("sni", argoDomain);
         vmess.put("alpn", "");
@@ -623,12 +625,16 @@ public class ServerService {
         String vmessJson = objectMapper.writeValueAsString(vmess);
         String vmessLink = "vmess://" + Base64.getEncoder().encodeToString(vmessJson.getBytes());
 
+        // URL encode paths for subscription links
+        String vlessPathEncoded = URLEncoder.encode(appConfig.getVlessPath() + "?ed=2560", StandardCharsets.UTF_8).replace("%", "%%");
+        String trojanPathEncoded = URLEncoder.encode(appConfig.getTrojanPath() + "?ed=2560", StandardCharsets.UTF_8).replace("%", "%%");
+
         // Generate subscription content (与 Node.js 格式完全一致)
         // 注意：格式必须与 Node.js 一致，包括换行和空格
-        String subTxt = String.format("\nvless://%s@%s:%s?encryption=none&security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%%2Fvless-argo%%3Fed%%3D2560#%s\n  \n%s\n  \ntrojan://%s@%s:%s?security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%%2Ftrojan-argo%%3Fed%%3D2560#%s\n    ",
-            appConfig.getUuid(), appConfig.getCfip(), appConfig.getCfport(), argoDomain, argoDomain, nodeName,
+        String subTxt = String.format("\nvless://%s@%s:%s?encryption=none&security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%s#%s\n  \n%s\n  \ntrojan://%s@%s:%s?security=tls&sni=%s&fp=firefox&type=ws&host=%s&path=%s#%s\n    ",
+            appConfig.getUuid(), appConfig.getCfip(), appConfig.getCfport(), argoDomain, argoDomain, vlessPathEncoded, nodeName,
             vmessLink,
-            appConfig.getUuid(), appConfig.getCfip(), appConfig.getCfport(), argoDomain, argoDomain, nodeName
+            appConfig.getUuid(), appConfig.getCfip(), appConfig.getCfport(), argoDomain, argoDomain, trojanPathEncoded, nodeName
         );
 
         // Save to file
