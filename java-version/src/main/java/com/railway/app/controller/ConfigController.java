@@ -91,6 +91,9 @@ public class ConfigController {
         config.put("CFIP", appConfig.getCfip());
         config.put("CFPORT", appConfig.getCfport());
         config.put("NAME", appConfig.getName());
+        config.put("VLESS_PATH", appConfig.getVlessPath());
+        config.put("VMESS_PATH", appConfig.getVmessPath());
+        config.put("TROJAN_PATH", appConfig.getTrojanPath());
 
         // 如果存在 .env 文件，从文件读取
         Path envFilePath = Paths.get(appConfig.getFilePath(), ".env");
@@ -406,6 +409,24 @@ public class ConfigController {
                     <label for="NAME">节点名称 (NAME)</label>
                     <input type="text" id="NAME" name="NAME" placeholder="">
                     <div class="hint">节点名称，用于识别不同的部署</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="VLESS_PATH">VLESS 路径 (VLESS_PATH)</label>
+                    <input type="text" id="VLESS_PATH" name="VLESS_PATH" placeholder="/vless-argo">
+                    <div class="hint">VLESS 协议的 WebSocket 路径，默认为 /vless-argo</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="VMESS_PATH">VMess 路径 (VMESS_PATH)</label>
+                    <input type="text" id="VMESS_PATH" name="VMESS_PATH" placeholder="/vmess-argo">
+                    <div class="hint">VMess 协议的 WebSocket 路径，默认为 /vmess-argo</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="TROJAN_PATH">Trojan 路径 (TROJAN_PATH)</label>
+                    <input type="text" id="TROJAN_PATH" name="TROJAN_PATH" placeholder="/trojan-argo">
+                    <div class="hint">Trojan 协议的 WebSocket 路径，默认为 /trojan-argo</div>
                 </div>
 
                 <div class="btn-group">

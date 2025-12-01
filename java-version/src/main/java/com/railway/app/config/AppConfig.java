@@ -151,6 +151,9 @@ public class AppConfig {
                 loadFromProperties(props, "CFIP", this::setCfip);
                 loadFromProperties(props, "CFPORT", this::setCfport);
                 loadFromProperties(props, "NAME", this::setName);
+                loadFromProperties(props, "VLESS_PATH", this::setVlessPath);
+                loadFromProperties(props, "VMESS_PATH", this::setVmessPath);
+                loadFromProperties(props, "TROJAN_PATH", this::setTrojanPath);
 
                 System.out.println("Environment variables loaded from .env file");
             } catch (IOException e) {
