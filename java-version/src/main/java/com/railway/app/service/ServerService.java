@@ -626,12 +626,9 @@ public class ServerService {
         String vmessLink = "vmess://" + Base64.getEncoder().encodeToString(vmessJson.getBytes());
 
         // URL encode paths for subscription links
-        // 路径部分需要编码，但查询参数的特殊字符（? 和 =）不应该被编码
+        // 路径部分单独编码，然后拼接已编码的查询参数
         String vlessPathEncoded = URLEncoder.encode(appConfig.getVlessPath(), StandardCharsets.UTF_8) + "%3Fed%3D2560";
         String trojanPathEncoded = URLEncoder.encode(appConfig.getTrojanPath(), StandardCharsets.UTF_8) + "%3Fed%3D2560";
-        // 为 String.format 转义 %
-        vlessPathEncoded = vlessPathEncoded.replace("%", "%%");
-        trojanPathEncoded = trojanPathEncoded.replace("%", "%%");
 
         // Generate subscription content (与 Node.js 格式完全一致)
         // 注意：格式必须与 Node.js 一致，包括换行和空格
