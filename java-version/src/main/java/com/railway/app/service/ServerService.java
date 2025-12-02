@@ -575,6 +575,10 @@ public class ServerService {
 
                             String url = line.substring(start, end);
                             argoDomain = url.replace("https://", "").replace("http://", "");
+
+                            // 清理域名：去除空格和特殊字符
+                            argoDomain = argoDomain.replaceAll("[\\s\"\\}\\|]+$", "").trim();
+
                             System.out.println("ArgoDomain: " + argoDomain);
                             generateLinks(argoDomain);
                             return;
