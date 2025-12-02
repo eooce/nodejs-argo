@@ -46,16 +46,22 @@ public class ProcessManager {
      */
     public void stopProcess(String name) {
         Process process = processes.get(name);
-        if (process != null && process.isAlive()) {
-            process.destroy();
-            try {
-                process.waitFor();
-            } catch (InterruptedException e) {
-                process.destroyForcibly();
+        if (process != null) {
+            // 先尝试正常终止
+            if (process.isAlive()) {
+                process.destroy();
+                try {
+                    process.waitFor(2, java.util.concurrent.TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    process.destroyForcibly();
+                }
             }
             processes.remove(name);
-            System.out.println("Stopped process: " + name);
         }
+
+        // 强制杀死所有匹配的进程（处理 nohup 启动的进程）
+        killProcessByName(name);
+        System.out.println("Stopped process: " + name);
     }
 
     /**
