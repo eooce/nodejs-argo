@@ -382,7 +382,6 @@ function argoType() {
     console.log("ARGO_AUTH mismatch TunnelSecret,use token connect to tunnel");
   }
 }
-argoType();
 
 // 获取临时隧道domain
 async function extractDomains() {
@@ -415,7 +414,6 @@ async function extractDomains() {
         fs.unlinkSync(path.join(FILE_PATH, 'boot.log'));
         async function killBotProcess() {
           try {
-            // Windows系统使用taskkill命令
             if (process.platform === 'win32') {
               await exec(`taskkill /f /im ${botName}.exe > nul 2>&1`);
             } else {
@@ -439,41 +437,55 @@ async function extractDomains() {
       }
     } catch (error) {
       console.error('Error reading boot.log:', error);
-    }
   }
+}
 
-  // 生成 list 和 sub 信息
-  async function generateLinks(argoDomain) {
-    const metaInfo = execSync(
-      'curl -sm 5 https://speed.cloudflare.com/meta | awk -F\\" \'{print $26"-"$18}\' | sed -e \'s/ /_/g\'',
-      { encoding: 'utf-8' }
-    );
-    const ISP = metaInfo.trim();
-    // 如果 NAME 为空，则只使用 ISP 作为名称
-    const nodeName = NAME ? `${NAME}-${ISP}` : ISP;
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const VMESS = { v: '2', ps: `${nodeName}`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'none', net: 'ws', type: 'none', host: argoDomain, path: '/vmess-argo?ed=2560', tls: 'tls', sni: argoDomain, alpn: '', fp: 'firefox'};
-        const subTxt = `
+// 获取isp信息
+async function getMetaInfo() {
+  try {
+    const response1 = await axios.get('https://ipapi.co/json/', { timeout: 3000 });
+    if (response1.data && response1.data.country_code && response1.data.org) {
+      return `${response1.data.country_code}_${response1.data.org}`;
+    }
+  } catch (error) {
+      try {
+        // 备用 ip-api.com 获取isp
+        const response2 = await axios.get('http://ip-api.com/json/', { timeout: 3000 });
+        if (response2.data && response2.data.status === 'success' && response2.data.countryCode && response2.data.org) {
+          return `${response2.data.countryCode}_${response2.data.org}`;
+        }
+      } catch (error) {
+        // console.error('Backup API also failed');
+      }
+  }
+  return 'Unknown';
+}
+// 生成 list 和 sub 信息
+async function generateLinks(argoDomain) {
+  const ISP = await getMetaInfo();
+  const nodeName = NAME ? `${NAME}-${ISP}` : ISP;
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const VMESS = { v: '2', ps: `${nodeName}`, add: CFIP, port: CFPORT, id: UUID, aid: '0', scy: 'none', net: 'ws', type: 'none', host: argoDomain, path: '/vmess-argo?ed=2560', tls: 'tls', sni: argoDomain, alpn: '', fp: 'firefox'};
+      const subTxt = `
 vless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${argoDomain}&fp=firefox&type=ws&host=${argoDomain}&path=%2Fvless-argo%3Fed%3D2560#${nodeName}
-  
+
 vmess://${Buffer.from(JSON.stringify(VMESS)).toString('base64')}
-  
+
 trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argoDomain}&fp=firefox&type=ws&host=${argoDomain}&path=%2Ftrojan-argo%3Fed%3D2560#${nodeName}
     `;
-        // 打印 sub.txt 内容到控制台
-        console.log(Buffer.from(subTxt).toString('base64'));
-        fs.writeFileSync(subPath, Buffer.from(subTxt).toString('base64'));
-        console.log(`${FILE_PATH}/sub.txt saved successfully`);
-        uploadNodes();
-        // 将内容进行 base64 编码并写入 SUB_PATH 路由
-        app.get(`/${SUB_PATH}`, (req, res) => {
-          const encodedContent = Buffer.from(subTxt).toString('base64');
-          res.set('Content-Type', 'text/plain; charset=utf-8');
-          res.send(encodedContent);
-        });
-        resolve(subTxt);
+      // 打印 sub.txt 内容到控制台
+      console.log(Buffer.from(subTxt).toString('base64'));
+      fs.writeFileSync(subPath, Buffer.from(subTxt).toString('base64'));
+      console.log(`${FILE_PATH}/sub.txt saved successfully`);
+      uploadNodes();
+      // 将内容进行 base64 编码并写入 SUB_PATH 路由
+      app.get(`/${SUB_PATH}`, (req, res) => {
+        const encodedContent = Buffer.from(subTxt).toString('base64');
+        res.set('Content-Type', 'text/plain; charset=utf-8');
+        res.send(encodedContent);
+      });
+      resolve(subTxt);
       }, 2000);
     });
   }
@@ -591,6 +603,7 @@ async function AddVisitTask() {
 // 主运行逻辑
 async function startserver() {
   try {
+    argoType();
     deleteNodes();
     cleanupOldFiles();
     await generateConfig();
@@ -604,5 +617,4 @@ async function startserver() {
 startserver().catch(error => {
   console.error('Unhandled error in startserver:', error);
 });
-
 app.listen(PORT, () => console.log(`http server is running on port:${PORT}!`));
