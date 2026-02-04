@@ -14,7 +14,7 @@ Telegram交流反馈群组：https://t.me/eooceu
 </div>
 
 ## 郑重声明
-* 本项目自2025年10月29日15时45分起,已更改开源协议为GPL 3.0,并包含以下特定要求
+* 本项目自2025年10月29日15时45分起,已更改开源协议,并包含以下特定要求
 * 此项目仅限个人使用，禁止用于商业行为(包括但不限于：youtube,bilibili,tiktok,facebook..等等)
 * 禁止新建项目将代码复制到自己仓库中用做商业行为
 * 请遵守当地法律法规,禁止滥用做公共代理行为
@@ -204,6 +204,3 @@ npm install -g nodejs-argo
 * 感谢[VPS.Town](https://vps.town)提供赞助 <a href="https://vps.town" target="_blank"><img src="https://vps.town/static/images/sponsor.png" width="30%" alt="https://vps.town"></a>
 
 * 感谢[ZMTO](https://zmto.com/?affid=1548)提供赞助优质双isp vps。
-  
-## 许可证
-GPL 3.0
