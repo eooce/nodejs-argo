@@ -39,7 +39,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/zeabur-us:latest                        
+            ghcr.io/${{ github.repository_owner }}/zeabur-yd:latest                        
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}    
             org.opencontainers.image.description=HTTP Server
