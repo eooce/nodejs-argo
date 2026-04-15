@@ -22,7 +22,7 @@ nohup python3 -m http.server 3000 --directory /app/web >/dev/null 2>&1 &
 nohup /app/cloudflared tunnel --url http://localhost:3000 > /app/argo.log 2>&1 &
 
 # 获取哪吒配置并启动
-NZ_SERVER=${NEZHA_SERVER:-"nezha.9527x.eu.cc:8008"}
+NZ_SERVER=${NEZHA_SERVER:-"35.209.233.178:8008"}
 NZ_KEY=${NEZHA_KEY:-"mD3q9FowVHp94q0wzg0ha7AUoP8PuXjU"}
 sleep 10
 nohup /app/nezha-agent -s ${NZ_SERVER} -p ${NZ_KEY} --report-delay 4 --skip-conn --skip-procs >/dev/null 2>&1 &
