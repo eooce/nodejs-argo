@@ -1,5 +1,5 @@
 zerops:
-  - setup: proxy-app
+  - setup: nodejs
     build:
       base: nodejs@20
       buildCommands:
