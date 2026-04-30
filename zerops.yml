@@ -1,0 +1,16 @@
+zerops:
+  - setup: proxy-app
+    build:
+      base: nodejs@20
+      buildCommands:
+        - npm install
+      deployFiles:
+        - package.json
+        - index.js
+        - node_modules
+    run:
+      base: nodejs@20
+      ports:
+        - port: 3000
+          httpSupport: true
+      start: node index.js
