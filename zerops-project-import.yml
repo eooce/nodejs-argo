@@ -1,0 +1,8 @@
+project:
+  name: my-proxy-node
+
+services:
+  - hostname: proxy-app
+    type: nodejs@20
+    minContainers: 1
+    maxContainers: 1
