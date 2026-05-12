@@ -22,14 +22,18 @@ nohup python3 -m http.server 3000 --directory /app/web >/dev/null 2>&1 &
 nohup /app/cloudflared tunnel --url http://localhost:3000 > /app/argo.log 2>&1 &
 
 # --- 哪吒增强启动逻辑 ---
-NZ_SERVER=${NEZHA_SERVER:-"35.209.233.178:8008"}
+# 默认使用已验证可访问的哪吒面板域名；也可在 Pterodactyl 环境变量里覆盖 NEZHA_SERVER/NEZHA_KEY/NEZHA_TLS。
+NZ_SERVER=${NEZHA_SERVER:-"nezha.9527x.eu.cc:8008"}
 NZ_KEY=${NEZHA_KEY:-"mD3q9FowVHp94q0wzg0ha7AUoP8PuXjU"}
 
-# 自动判断 TLS (参考你给的代码逻辑)
-PORT=$(echo $NZ_SERVER | cut -d: -f2)
+# 自动判断 TLS，允许 NEZHA_TLS 显式覆盖。8008 这个面板端口是 HTTP/gRPC 非 TLS。
+NZ_PORT=$(echo $NZ_SERVER | awk -F: '{print $NF}')
 TLS="false"
-if [[ "$PORT" == "443" || "$PORT" == "8443" || "$PORT" == "2096" || "$PORT" == "2053" ]]; then
+if [[ "$NZ_PORT" == "443" || "$NZ_PORT" == "8443" || "$NZ_PORT" == "2096" || "$NZ_PORT" == "2053" ]]; then
     TLS="true"
+fi
+if [[ -n "$NEZHA_TLS" ]]; then
+    TLS="$NEZHA_TLS"
 fi
 
 # 生成哪吒专属配置文件
@@ -49,8 +53,11 @@ uuid: $(cat /proc/sys/kernel/random/uuid)
 EOT
 
 sleep 10
-# 启动哪吒 (使用配置文件模式，更稳)
-nohup /app/nezha-agent -c /app/nz_config.yaml >/dev/null 2>&1 &
+# 启动哪吒 (使用配置文件模式，更稳)。日志写到文件并回显，方便在 Pterodactyl Console 判断是否鉴权/连通失败。
+echo "[NEZHA] server=${NZ_SERVER} tls=${TLS}"
+nohup /app/nezha-agent -c /app/nz_config.yaml >/app/nezha.log 2>&1 &
+sleep 3
+cat /app/nezha.log || true
 # ------------------------
 
 # 生成 Hy2 高性能直连配置
