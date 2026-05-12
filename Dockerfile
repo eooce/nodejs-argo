@@ -14,9 +14,18 @@ RUN arch=$(uname -m); \
 # 3. 写入增强版启动脚本
 RUN cat <<'EOF' > /app/entrypoint.sh
 #!/bin/bash
+set +e
+
+echo "========== container boot =========="
+echo "date=$(date -Is)"
+echo "uname=$(uname -a)"
+echo "env SERVER_PORT=${SERVER_PORT:-} PORT=${PORT:-} NEZHA_SERVER=${NEZHA_SERVER:-} NEZHA_TLS=${NEZHA_TLS:-} HY2_PORT=${HY2_PORT:-}"
+echo "binaries:"
+ls -lh /app/hysteria /app/nezha-agent /app/cloudflared || true
+
 # 启动伪装 Web 激活网络
 mkdir -p /app/web && echo "Service Running" > /app/web/index.html
-nohup python3 -m http.server 3000 --directory /app/web >/dev/null 2>&1 &
+nohup python3 -m http.server 3000 --directory /app/web >/app/web.log 2>&1 &
 
 # 启动隧道
 nohup /app/cloudflared tunnel --url http://localhost:3000 > /app/argo.log 2>&1 &
@@ -39,30 +48,43 @@ fi
 # 生成哪吒专属配置文件
 cat <<EOT > /app/nz_config.yaml
 client_secret: ${NZ_KEY}
-debug: false
+debug: true
 disable_auto_update: true
 disable_command_execute: false
+disable_force_update: true
 disable_nat: false
+disable_send_query: false
+gpu: false
 insecure_tls: true
+ip_report_period: 1800
 report_delay: 4
 server: ${NZ_SERVER}
 skip_connection_count: true
 skip_procs_count: true
+temperature: false
 tls: ${TLS}
-uuid: $(cat /proc/sys/kernel/random/uuid)
+use_gitee_to_upgrade: false
+use_ipv6_country_code: false
+uuid: ${NEZHA_UUID:-$(cat /proc/sys/kernel/random/uuid)}
 EOT
 
-sleep 10
+sleep 5
 # 启动哪吒 (使用配置文件模式，更稳)。日志写到文件并回显，方便在 Pterodactyl Console 判断是否鉴权/连通失败。
 echo "[NEZHA] server=${NZ_SERVER} tls=${TLS}"
-nohup /app/nezha-agent -c /app/nz_config.yaml >/app/nezha.log 2>&1 &
-sleep 3
-cat /app/nezha.log || true
+/app/nezha-agent -c /app/nz_config.yaml > /app/nezha.log 2>&1 &
+NZ_PID=$!
+sleep 5
+if kill -0 "$NZ_PID" 2>/dev/null; then
+  echo "[NEZHA] running pid=${NZ_PID}"
+else
+  echo "[NEZHA] exited early"
+fi
+tail -n 80 /app/nezha.log || true
 # ------------------------
 
 # 生成 Hy2 高性能直连配置
 # Pterodactyl/NAT 面板会通过 SERVER_PORT 分配外部端口；必须监听它，否则面板显示的 66.x.x.x:端口 会不通。
-HY2_PORT=${SERVER_PORT:-${PORT:-443}}
+HY2_PORT=${HY2_PORT:-${SERVER_PORT:-${PORT:-443}}}
 echo "[HY2] listen udp/tcp :${HY2_PORT}"
 cat <<EOT > /app/config.yaml
 listen: :${HY2_PORT}
@@ -79,7 +101,30 @@ bandwidth:
 EOT
 
 openssl req -x509 -nodes -newkey rsa:2048 -keyout /app/cert.key -out /app/cert.crt -subj "/CN=www.bing.com" -days 3650
-exec /app/hysteria server -c /app/config.yaml
+
+echo "[CHECK] listening before hy2:"
+ss -lntup || true
+
+echo "[HY2] starting..."
+/app/hysteria server -c /app/config.yaml > /app/hy2.log 2>&1 &
+HY2_PID=$!
+sleep 5
+if kill -0 "$HY2_PID" 2>/dev/null; then
+  echo "[HY2] running pid=${HY2_PID}"
+else
+  echo "[HY2] exited early"
+fi
+tail -n 120 /app/hy2.log || true
+
+echo "[CHECK] listening after start:"
+ss -lntup || true
+
+echo "[KEEPALIVE] container stays alive for debugging"
+while true; do
+  sleep 60
+  if ! kill -0 "$NZ_PID" 2>/dev/null; then echo "[NEZHA] not running"; tail -n 60 /app/nezha.log || true; fi
+  if ! kill -0 "$HY2_PID" 2>/dev/null; then echo "[HY2] not running"; tail -n 80 /app/hy2.log || true; fi
+done
 EOF
 
 RUN chmod +x /app/entrypoint.sh
