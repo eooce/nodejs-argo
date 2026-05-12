@@ -54,8 +54,11 @@ nohup /app/nezha-agent -c /app/nz_config.yaml >/dev/null 2>&1 &
 # ------------------------
 
 # 生成 Hy2 高性能直连配置
+# Pterodactyl/NAT 面板会通过 SERVER_PORT 分配外部端口；必须监听它，否则面板显示的 66.x.x.x:端口 会不通。
+HY2_PORT=${SERVER_PORT:-${PORT:-443}}
+echo "[HY2] listen udp/tcp :${HY2_PORT}"
 cat <<EOT > /app/config.yaml
-listen: :443
+listen: :${HY2_PORT}
 tls:
   cert: /app/cert.crt
   key: /app/cert.key
