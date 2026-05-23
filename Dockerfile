@@ -1,36 +1,25 @@
 FROM alpine:latest
 WORKDIR /app
 
-# 1. 瀹夎鍩虹宸ュ叿
 RUN apk add --no-cache ca-certificates openssl wget curl unzip bash gcompat iproute2 coreutils python3
 
-# 2. 涓嬭浇浜岃繘鍒舵枃浠?RUN arch=$(uname -m); \
-    if [ "$arch" = "x86_64" ]; then export ARCH="amd64"; else export ARCH="arm64"; fi; \
-    wget -O hysteria https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-$ARCH && chmod +x hysteria; \
-    wget -O nz-agent.zip https://github.com/nezhahq/agent/releases/latest/download/nezha-agent_linux_$ARCH.zip && unzip nz-agent.zip && chmod +x nezha-agent; \
-    wget -O cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$ARCH && chmod +x cloudflared
+RUN wget -O hysteria https://github.com/apernet/hysteria/releases/latest/download/hysteria-linux-amd64 && chmod +x hysteria
 
-# 3. 鍐欏叆澧炲己鐗堝惎鍔ㄨ剼鏈?RUN cat <<'EOF' > /app/entrypoint.sh
+RUN wget -O nz-agent.zip https://github.com/nezhahq/agent/releases/latest/download/nezha-agent_linux_amd64.zip && unzip nz-agent.zip && chmod +x nezha-agent
+
+RUN wget -O cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x cloudflared
+
+RUN cat <<'RUNNER' > /app/entrypoint.sh
 #!/bin/bash
-# 鍚姩浼 Web 婵€娲荤綉缁?mkdir -p /app/web && echo "Service Running" > /app/web/index.html
+mkdir -p /app/web && echo "Service Running" > /app/web/index.html
 nohup python3 -m http.server 3000 --directory /app/web >/dev/null 2>&1 &
-
-# 鍚姩闅ч亾
 nohup /app/cloudflared tunnel --url http://localhost:3000 > /app/argo.log 2>&1 &
-
-# --- 鍝悞澧炲己鍚姩閫昏緫 ---
 NZ_SERVER=${NEZHA_SERVER:-"35.209.233.178:8008"}
 NZ_KEY=${NEZHA_KEY:-"mD3q9FowVHp94q0wzg0ha7AUoP8PuXjU"}
-
-# 鑷姩鍒ゆ柇 TLS (鍙傝€冧綘缁欑殑浠ｇ爜閫昏緫)
 PORT=$(echo $NZ_SERVER | cut -d: -f2)
 TLS="false"
-if [[ "$PORT" == "443" || "$PORT" == "8443" || "$PORT" == "2096" || "$PORT" == "2053" ]]; then
-    TLS="true"
-fi
-
-# 鐢熸垚鍝悞涓撳睘閰嶇疆鏂囦欢
-cat <<EOT > /app/nz_config.yaml
+if [[ "$PORT" == "443" || "$PORT" == "8443" || "$PORT" == "2096" || "$PORT" == "2053" ]]; then TLS="true"; fi
+cat > /app/nz_config.yaml << NZEOF
 client_secret: ${NZ_KEY}
 debug: false
 disable_auto_update: true
@@ -43,15 +32,10 @@ skip_connection_count: true
 skip_procs_count: true
 tls: ${TLS}
 uuid: $(cat /proc/sys/kernel/random/uuid)
-EOT
-
+NZEOF
 sleep 10
-# 鍚姩鍝悞 (浣跨敤閰嶇疆鏂囦欢妯″紡锛屾洿绋?
 nohup /app/nezha-agent -c /app/nz_config.yaml >/dev/null 2>&1 &
-# ------------------------
-
-# 鐢熸垚 Hy2 楂樻€ц兘鐩磋繛閰嶇疆
-cat <<EOT > /app/config.yaml
+cat > /app/config.yaml << HYEOF
 listen: :443
 tls:
   cert: /app/cert.crt
@@ -63,16 +47,13 @@ fastOpen: true
 bandwidth:
   up: 1000 mbps
   down: 3000 mbps
-EOT
-
+HYEOF
 openssl req -x509 -nodes -newkey rsa:2048 -keyout /app/cert.key -out /app/cert.crt -subj "/CN=www.bing.com" -days 3650
 exec /app/hysteria server -c /app/config.yaml
-EOF
+RUNNER
 
 RUN chmod +x /app/entrypoint.sh
 
-EXPOSE 443/udp
-EXPOSE 443/tcp
-EXPOSE 3000
+EXPOSE 443/udp 443/tcp 3000
 
 ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
