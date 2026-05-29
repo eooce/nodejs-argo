@@ -11,6 +11,12 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# --- 新增环境变量配置开始 ---
+# 强制所有 JavaScript Actions 使用 Node.js 24 运行，以消除 Node 20 弃用警告
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+# --- 新增环境变量配置结束 ---
+
 jobs:
   build:
     runs-on: ubuntu-latest
