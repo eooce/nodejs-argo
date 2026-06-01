@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绿·境 | 守护地球的未来</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Playfair+Display:wght@700&display=swap');
+        
+        :root {
+            --primary: #00ff9d;
+            --accent: #00b8ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0a1f1c 0%, #05100e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        /* 动态背景 */
+        .bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 157, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 184, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 100, 200, 0.1) 0%, transparent 50%);
+            animation: bgPulse 25s ease infinite;
+        }
+        
+        @keyframes bgPulse {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(1deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        
+        /* 漂浮粒子 */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            animation: floatParticle linear infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0.5); }
+            100% { transform: translateY(-100px) scale(1.2); }
+        }
+        
+        header {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), 
+                        url('https://picsum.photos/id/1015/1920/1080') center/cover;
+            filter: brightness(0.85) saturate(1.3);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 5.5rem;
+            background: linear-gradient(90deg, #00ff9d, #00eaff, #ff9dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 60px rgba(0, 255, 157, 0.5);
+            animation: titleGlow 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 20px #00ff9d); }
+            to { filter: drop-shadow(0 0 60px #00eaff); }
+        }
+        
+        .subtitle {
+            font-size: 1.6rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            letter-spacing: 3px;
+        }
+        
+        .cta-button {
+            padding: 18px 48px;
+            font-size: 1.3rem;
+            background: transparent;
+            color: white;
+            border: 3px solid var(--primary);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 40px rgba(0, 255, 157, 0.8);
+            transform: translateY(-5px);
+        }
+        
+        /* 内容区域 */
+        section {
+            padding: 120px 8%;
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            background: linear-gradient(90deg, #00ff9d, #00b8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 40px 30px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            transition: all 0.5s;
+        }
+        
+        .card:hover {
+            transform: translateY(-20px) scale(1.03);
+            box-shadow: 0 30px 60px rgba(0, 255, 157, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin: 20px 0;
+            font-size: 1.6rem;
+        }
+        
+        /* 动态叶子 */
+        .leaf {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.3;
+            animation: fallingLeaf linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes fallingLeaf {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(720deg); }
+        }
+        
+        footer {
+            background: #05100e;
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg" id="background"></div>
+
+    <header>
+        <div class="hero-bg"></div>
+        
+        <div class="hero-content">
+            <h1>守护绿境</h1>
+            <p class="subtitle">每一片叶子，都是地球的呼吸</p>
+            <button class="cta-button" onclick="document.getElementById('action').scrollIntoView({behavior: 'smooth'})">
+                立即行动
+            </button>
+        </div>
+        
+        <!-- 动态漂浮元素 -->
+        <div style="position:absolute; bottom:15%; left:10%; font-size:4rem; opacity:0.2; animation: float 12s infinite ease-in-out;">🌱</div>
+        <div style="position:absolute; bottom:25%; right:15%; font-size:3.5rem; opacity:0.25; animation: float 18s infinite ease-in-out reverse;">🌍</div>
+        <div style="position:absolute; top:30%; left:20%; font-size:2.8rem; opacity:0.2; animation: float 15s infinite ease-in-out;">🦋</div>
+    </header>
+
+    <section id="action">
+        <h2 class="section-title">我们能做什么？</h2>
+        <div class="cards">
+            <div class="card">
+                <h3>🌲 植树造林</h3>
+                <p>每一棵树都是对抗气候变化的战士。加入植树行动，用实际行动为地球增添绿色。</p>
+            </div>
+            <div class="card">
+                <h3>♻️ 减少塑料</h3>
+                <p>拒绝一次性塑料制品，使用环保袋、可重复利用的水杯，让海洋不再被塑料污染。</p>
+            </div>
+            <div class="card">
+                <h3>🌍 低碳生活</h3>
+                <p>选择公共交通、节约用电、支持可再生能源，为子孙后代留下更美好的家园。</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="background: linear-gradient(135deg, #0a2a1f, #041a12);">
+        <h2 class="section-title">地球的呼唤</h2>
+        <div style="text-align:center; font-size:1.4rem; max-width:800px; margin:0 auto; line-height:2;">
+            我们的星球正以前所未有的速度变暖。<br>
+            冰川在融化，森林在减少，物种在消失。<br><br>
+            <strong style="color:#00ff9d; font-size:1.8rem;">但我们还有机会。</strong><br>
+            从现在开始，从你我开始。
+        </div>
+    </section>
+
+    <footer>
+        <p>🌍 保护环境，从我做起 | 2026</p>
+        <p style="margin-top:15px; opacity:0.7;">用爱守护我们唯一的家园</p>
+    </footer>
+
+    <script>
+        // 创建漂浮粒子
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 7 + 4;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.bottom = '-20px';
+            particle.style.opacity = Math.random() * 0.6 + 0.3;
+            
+            const duration = Math.random() * 25 + 15;
+            particle.style.animationDuration = `${duration}s`;
+            
+            document.getElementById('background').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, duration * 1000);
+        }
+        
+        // 每300ms创建一个粒子
+        setInterval(createParticle, 280);
+        
+        // 创建飘落叶子
+        const leaves = ['🍃', '🌿', '🌱', '🪴', '🍀'];
+        function createLeaf() {
+            const leaf = document.createElement('div');
+            leaf.classList.add('leaf');
+            leaf.textContent = leaves[Math.floor(Math.random() * leaves.length)];
+            
+            leaf.style.left = Math.random() * 100 + 'vw';
+            leaf.style.animationDuration = Math.random() * 12 + 14 + 's';
+            leaf.style.fontSize = Math.random() * 1.8 + 2.2 + 'rem';
+            leaf.style.opacity = Math.random() * 0.4 + 0.25;
+            
+            document.body.appendChild(leaf);
+            
+            setTimeout(() => {
+                leaf.remove();
+            }, 30000);
+        }
+        
+        // 每800ms创建一个叶子
+        setInterval(createLeaf, 800);
+        
+        // 页面加载后多创建一些
+        window.onload = () => {
+            for(let i = 0; i < 25; i++) {
+                setTimeout(createParticle, i * 60);
+            }
+            for(let i = 0; i < 8; i++) {
+                setTimeout(createLeaf, i * 300);
+            }
+        };
+    </script>
+</body>
+</html>
