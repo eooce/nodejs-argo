@@ -1,14 +1,14 @@
 name: Build and Push Docker Image
 
-on:
+于:
   push:
-    branches: [ main ]
+    分支: [ main ]
     paths:
       - 'Dockerfile'
       - 'index.js'
       - 'package.json'
   pull_request:
-    branches: [ main ]
+    分支: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/nodejs:latest
+            ghcr.io/${{ github.repository_owner }}/jm:latest
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.description=HTTP Server
