@@ -13,3 +13,5 @@ RUN apk update && apk upgrade &&\
     npm install
 
 CMD ["node", "index.js"]
+
+
