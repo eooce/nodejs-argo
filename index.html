@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高大上博客 - 多功能响应式网站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 导航栏 */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+            opacity: 0.9;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* 页面内容区域 */
+        .page-content {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        /* 博客文章 */
+        .post {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .post:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .post-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .post-meta {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-excerpt {
+            color: #555;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .read-more {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .read-more:hover {
+            color: #764ba2;
+        }
+
+        /* 作品展示 */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .portfolio-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .portfolio-item h4 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .portfolio-item p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .widget {
+            margin-bottom: 2rem;
+        }
+
+        .widget-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            border-left: 4px solid #667eea;
+            padding-left: 0.5rem;
+        }
+
+        .about-widget p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .categories ul {
+            list-style: none;
+        }
+
+        .categories li {
+            margin-bottom: 0.5rem;
+        }
+
+        .categories a {
+            color: #555;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .categories a:hover {
+            color: #667eea;
+        }
+
+        /* 页脚 */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .blog-posts, .sidebar {
+                padding: 1rem;
+            }
+
+            .post-title {
+                font-size: 1.3rem;
+            }
+
+            .container {
+                padding: 0 10px;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .post {
+                padding-bottom: 1rem;
+            }
+
+            .blog-posts, .sidebar {
+                padding: 0.8rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        /* 主页介绍卡片 */
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">我的博客</div>
+                <ul class="nav-links">
+                    <li><a href="#home" onclick="showSection('home')">首页</a></li>
+                    <li><a href="#about" onclick="showSection('about')">关于</a></li>
+                    <li><a href="#blog" onclick="showSection('blog')">博客</a></li>
+                    <li><a href="#portfolio" onclick="showSection('portfolio')">作品</a></li>
+                    <li><a href="#contact" onclick="showSection('contact')">联系</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="page-content">
+                <!-- 首页 -->
+                <section id="home" class="section active">
+                    <div class="hero-section">
+                        <h1>欢迎来到我的博客</h1>
+                        <p>这里分享前端开发、技术心得和创意项目。让我们一起探索技术的魅力，创造美好的数字体验。</p>
+                        <a href="#blog" class="btn" onclick="showSection('blog')">开始阅读</a>
+                    </div>
+                    
+                    <h2>最新动态</h2>
+                    <p>欢迎访问我的个人博客！我是前端开发者，专注于现代Web技术和用户体验设计。在这里，我会分享最新的技术文章、项目经验和学习心得。</p>
+                    <p>最近我完成了几个有趣的项目，包括响应式网站设计、React应用开发和移动应用适配。期待与您分享更多内容！</p>
+                </section>
+
+                <!-- 关于页面 -->
+                <section id="about" class="section">
+                    <h2>关于我</h2>
+                    <p>我是一名经验丰富的前端工程师，拥有5年以上的Web开发经验。专注于现代JavaScript框架、响应式设计和用户体验优化。</p>
+                    <p>我热衷于学习新技术，关注前端发展趋势，并致力于将复杂的技术概念转化为易于理解的内容。</p>
+                    <h3>技能专长</h3>
+                    <ul>
+                        <li>前端技术：HTML5, CSS3, JavaScript (ES6+), React, Vue.js</li>
+                        <li>工具框架：Webpack, Babel, Sass, Bootstrap</li>
+                        <li>版本控制：Git, GitHub</li>
+                        <li>其他技能：响应式设计, PWA, 性能优化</li>
+                    </ul>
+                </section>
+
+                <!-- 博客页面 -->
+                <section id="blog" class="section">
+                    <h2>最新博客</h2>
+                    <article class="post">
+                        <h3 class="post-title">响应式网页设计的艺术</h3>
+                        <div class="post-meta">发布于 2024年1月15日 | 作者：博主</div>
+                        <p class="post-excerpt">
+                            响应式网页设计是现代网页开发的核心概念。通过使用CSS媒体查询、弹性盒子布局和网格布局，
+                            我们可以让网站在各种设备上都能呈现出最佳的用户体验。本文将深入探讨响应式设计的最佳实践。
+                        </p>
+                        <a href="#" class="read-more">阅读更多 →</a>
+                    </article>
+
+                    <article class="post">
+                        <h3 class="post-title">前端开发趋势展望</h3>
+                        <div class="post-meta">发布于 2024年1月10日 | 作者：博主</div>
+                        <p class="post-excerpt">
+                            2024年前端开发领域继续蓬勃发展。从React 18的新特性到Vue 3的Composition API，
+                            从Web Components的普及到PWA应用的增长，前端技术正在快速演进。
+                            让我们一起看看今年值得关注的技术趋势。
+                        </p>
+                        <a href="#" class="read-more">阅读更多 →</a>
+                    </article>
+
+                    <article class="post">
+                        <h3 class="post-title">JavaScript性能优化技巧</h3>
+                        <div class="post-meta">发布于 2024年1月5日 | 作者：博主</div>
+                        <p class="post-excerpt">
+                            JavaScript性能优化是提升用户体验的关键。通过减少DOM操作、使用虚拟滚动、
+                            实现懒加载和代码分割等技术，我们可以显著提高应用的响应速度。
+                            本文分享一些实用的性能优化策略。
+                        </p>
+                        <a href="#" class="read-more">阅读更多 →</a>
+                    </article>
+                </section>
+
+                <!-- 作品页面 -->
+                <section id="portfolio" class="section">
+                    <h2>我的作品</h2>
+                    <p>以下是我参与开发的一些项目和作品，涵盖了不同的技术栈和应用场景。</p>
+                    
+                    <div class="portfolio-grid">
+                        <div class="portfolio-item">
+                            <h4>电商网站</h4>
+                            <p>React + Node.js全栈项目</p>
+                            <small>2023年完成</small>
+                        </div>
+                        <div class="portfolio-item">
+                            <h4>移动端应用</h4>
+                            <p>React Native跨平台应用</p>
+                            <small>2023年完成</small>
+                        </div>
+                        <div class="portfolio-item">
+                            <h4>数据可视化平台</h4>
+                            <p>D3.js + React数据展示</p>
+                            <small>2023年完成</small>
+                        </div>
+                        <div class="portfolio-item">
+                            <h4>在线教育系统</h4>
+                            <p>Vue.js + Spring Boot</p>
+                            <small>2023年完成</small>
+                        </div>
+                        <div class="portfolio-item">
+                            <h4>企业官网</h4>
+                            <p>响应式设计 + CMS</p>
+                            <small>2023年完成</small>
+                        </div>
+                        <div class="portfolio-item">
+                            <h4>社交应用</h4>
+                            <p>React + GraphQL + Apollo</p>
+                            <small>2023年完成</small>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 联系页面 -->
+                <section id="contact" class="section">
+                    <h2>联系方式</h2>
+                    <p>如果您有任何问题、合作意向或技术交流的需求，欢迎随时联系我。</p>
+                    
+                    <h3>联系信息</h3>
+                    <ul>
+                        <li>📧 邮箱: contact@example.com</li>
+                        <li>📱 微信: frontend_dev</li>
+                        <li>💼 LinkedIn: linkedin.com/in/frontenddev</li>
+                        <li>🐙 GitHub: github.com/frontenddev</li>
+                    </ul>
+                    
+                    <h3>留言表单</h3>
+                    <form style="margin-top: 1rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label for="name" style="display: block; margin-bottom: 0.5rem;">姓名:</label>
+                            <input type="text" id="name" name="name" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label for="email" style="display: block; margin-bottom: 0.5rem;">邮箱:</label>
+                            <input type="email" id="email" name="email" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label for="message" style="display: block; margin-bottom: 0.5rem;">消息:</label>
+                            <textarea id="message" name="message" rows="4" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                        </div>
+                        <button type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 4px; cursor: pointer;">发送消息</button>
+                    </form>
+                </section>
+            </div>
+
+            <aside class="sidebar">
+                <div class="widget about-widget">
+                    <h3 class="widget-title">关于博主</h3>
+                    <p>资深前端工程师，专注于现代Web技术栈的研究与实践。热爱分享知识，喜欢探索新技术。</p>
+                </div>
+
+                <div class="widget categories">
+                    <h3 class="widget-title">分类</h3>
+                    <ul>
+                        <li><a href="#">前端开发 (15)</a></li>
+                        <li><a href="#">JavaScript (8)</a></li>
+                        <li><a href="#">CSS (6)</a></li>
+                        <li><a href="#">React (12)</a></li>
+                        <li><a href="#">Vue.js (5)</a></li>
+                        <li><a href="#">Node.js (3)</a></li>
+                    </ul>
+                </div>
+
+                <div class="widget recent-posts">
+                    <h3 class="widget-title">最新文章</h3>
+                    <ul>
+                        <li><a href="#" onclick="showSection('blog')">响应式网页设计的艺术</a></li>
+                        <li><a href="#" onclick="showSection('blog')">前端开发趋势展望</a></li>
+                        <li><a href="#" onclick="showSection('blog')">JavaScript性能优化技巧</a></li>
+                        <li><a href="#" onclick="showSection('blog')">React Hooks最佳实践</a></li>
+                        <li><a href="#" onclick="showSection('blog')">CSS Grid完全指南</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 我的博客. 版权所有. | 设计精美，体验至上</p>
+        </div>
+    </footer>
+
+    <script>
+        function showSection(sectionId) {
+            // 隐藏所有section
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 显示选中的section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 更新URL hash
+            window.location.hash = sectionId;
+        }
+
+        // 页面加载时根据hash显示对应内容
+        window.addEventListener('load', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                showSection(hash);
+            }
+        });
+
+        // 监听hash变化
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                showSection(hash);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
