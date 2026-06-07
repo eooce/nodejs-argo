@@ -1,966 +1,1314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeFlow | Visual Development Platform</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Roboto', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f9fbfd;
-        }
-        
-        h1, h2, h3, h4 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header & Navigation */
-        header {
-            background-color: #fff;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo-icon {
-            color: #4361ee;
-            font-size: 28px;
-            margin-right: 10px;
-        }
-        
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-        }
-        
-        .logo-text span {
-            color: #4361ee;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 30px;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #4361ee;
-        }
-        
-        .cta-button {
-            background-color: #4361ee;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        
-        .cta-button:hover {
-            background-color: #3a56d4;
-            transform: translateY(-2px);
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #333;
-            cursor: pointer;
-        }
-        
-        /* Hero Section */
-        .hero {
-            padding: 150px 0 100px;
-            background: linear-gradient(135deg, #f0f4ff 0%, #f9fbfd 100%);
-        }
-        
-        .hero-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .hero-text {
-            flex: 1;
-            padding-right: 40px;
-        }
-        
-        .hero-text h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #222;
-        }
-        
-        .hero-text h1 span {
-            color: #4361ee;
-        }
-        
-        .hero-text p {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 30px;
-            max-width: 600px;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .secondary-button {
-            background-color: white;
-            color: #4361ee;
-            border: 2px solid #4361ee;
-            padding: 12px 28px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .secondary-button:hover {
-            background-color: #f0f4ff;
-        }
-        
-        .hero-image {
-            flex: 1;
-            text-align: center;
-        }
-        
-        .hero-image img {
-            max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
-        }
-        
-        /* Features Section */
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        
-        .section-title h2 {
-            font-size: 36px;
-            color: #222;
-            margin-bottom: 15px;
-        }
-        
-        .section-title p {
-            color: #666;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .features {
-            padding: 100px 0;
-            background-color: white;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-        
-        .feature-card {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .feature-icon {
-            background-color: #eef2ff;
-            color: #4361ee;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-        
-        .feature-card h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-        
-        .feature-card p {
-            color: #666;
-        }
-        
-        /* Benefits Section */
-        .benefits {
-            padding: 100px 0;
-            background-color: #f0f4ff;
-        }
-        
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-        
-        .benefit-item {
-            text-align: center;
-            padding: 30px 20px;
-        }
-        
-        .benefit-icon {
-            color: #4361ee;
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-        
-        .benefit-item h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-        
-        .benefit-item p {
-            color: #666;
-        }
-        
-        /* Testimonials */
-        .testimonials {
-            padding: 100px 0;
-            background-color: white;
-        }
-        
-        .testimonial-slider {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-        
-        .testimonial {
-            background: #f9fbfd;
-            padding: 40px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .testimonial-text {
-            font-size: 18px;
-            font-style: italic;
-            margin-bottom: 30px;
-            color: #555;
-        }
-        
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .author-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #ddd;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #4361ee;
-            font-size: 24px;
-        }
-        
-        .author-info h4 {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-        
-        .author-info p {
-            color: #777;
-            font-size: 14px;
-        }
-        
-        /* Pricing Section */
-        .pricing {
-            padding: 100px 0;
-            background-color: #f9fbfd;
-        }
-        
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-        
-        .pricing-card {
-            background: white;
-            border-radius: 10px;
-            padding: 40px 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        
-        .pricing-card.featured {
-            border-top: 5px solid #4361ee;
-            transform: scale(1.05);
-            position: relative;
-        }
-        
-        .featured-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4361ee;
-            color: white;
-            padding: 5px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .pricing-card:hover {
-            transform: translateY(-10px);
-        }
-        
-        .pricing-card.featured:hover {
-            transform: scale(1.05) translateY(-10px);
-        }
-        
-        .plan-name {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .plan-price {
-            font-size: 48px;
-            font-weight: 700;
-            color: #4361ee;
-            margin-bottom: 20px;
-        }
-        
-        .plan-price span {
-            font-size: 16px;
-            color: #777;
-        }
-        
-        .plan-features {
-            list-style: none;
-            margin-bottom: 30px;
-        }
-        
-        .plan-features li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            color: #555;
-        }
-        
-        .plan-features li:last-child {
-            border-bottom: none;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
-            text-align: center;
-            color: white;
-        }
-        
-        .cta-section h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        
-        .cta-section p {
-            font-size: 18px;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            opacity: 0.9;
-        }
-        
-        .cta-section .cta-button {
-            background-color: white;
-            color: #4361ee;
-            font-size: 16px;
-            padding: 15px 40px;
-        }
-        
-        .cta-section .cta-button:hover {
-            background-color: #f0f4ff;
-        }
-        
-        /* Footer */
-        footer {
-            background-color: #222;
-            color: #ccc;
-            padding: 70px 0 20px;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 50px;
-        }
-        
-        .footer-column h3 {
-            font-size: 20px;
-            color: white;
-            margin-bottom: 25px;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: #aaa;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-links a:hover {
-            color: #4361ee;
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #444;
-            font-size: 14px;
-            color: #888;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .hero-content {
-                flex-direction: column;
-            }
-            
-            .hero-text {
-                padding-right: 0;
-                margin-bottom: 50px;
-                text-align: center;
-            }
-            
-            .hero-text p {
-                margin: 0 auto 30px;
-            }
-            
-            .pricing-card.featured {
-                transform: none;
-            }
-            
-            .pricing-card.featured:hover {
-                transform: translateY(-10px);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .hero-text h1 {
-                font-size: 36px;
-            }
-            
-            .section-title h2 {
-                font-size: 30px;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .hero-buttons button {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .hero {
-                padding: 130px 0 80px;
-            }
-            
-            .features, .benefits, .testimonials, .pricing, .cta-section {
-                padding: 70px 0;
-            }
-            
-            .feature-card, .testimonial {
-                padding: 25px;
-            }
-            
-            .plan-price {
-                font-size: 36px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Type — The Art of Letters</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,200;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0b;
+    --bg2: #111110;
+    --fg: #f0ebe3;
+    --muted: #7a746b;
+    --accent: #e8a838;
+    --accent2: #d4553a;
+    --card: rgba(255,255,255,0.035);
+    --border: rgba(255,255,255,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Source Serif 4', Georgia, serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ===== Cursor Glow ===== */
+  .cursor-glow {
+    position: fixed;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(circle, rgba(232,168,56,0.05) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: left 0.4s ease-out, top 0.4s ease-out;
+  }
+
+  /* ===== Floating Letters ===== */
+  .floating-letters {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .floating-letter {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    color: rgba(255,255,255,0.02);
+    font-weight: 900;
+    animation: floatLetter linear infinite;
+    user-select: none;
+  }
+
+  @keyframes floatLetter {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    8% { opacity: 1; }
+    88% { opacity: 1; }
+    100% { transform: translateY(-120px) rotate(180deg); opacity: 0; }
+  }
+
+  /* ===== Navigation ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(24px);
+    background: rgba(11,11,11,0.65);
+    border-bottom: 1px solid var(--border);
+    transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+
+  nav .logo span { color: var(--fg); font-weight: 400; }
+
+  nav .nav-links {
+    display: flex;
+    gap: 2.2rem;
+    list-style: none;
+  }
+
+  nav .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  nav .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+
+  nav .nav-links a:hover { color: var(--fg); }
+  nav .nav-links a:hover::after { width: 100%; }
+
+  /* ===== Hero ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 2rem;
+  }
+
+  .hero-watermark {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(10rem, 22vw, 20rem);
+    font-weight: 900;
+    color: rgba(255,255,255,0.012);
+    white-space: nowrap;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.2rem, 8vw, 7.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    text-align: center;
+    letter-spacing: -0.03em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 .line {
+    display: block;
+    overflow: hidden;
+  }
+
+  .hero h1 .line span {
+    display: inline-block;
+    transform: translateY(115%);
+    animation: slideUp 1s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .hero h1 .line:nth-child(2) span { animation-delay: 0.12s; }
+  .hero h1 .line:nth-child(3) span { animation-delay: 0.24s; }
+
+  @keyframes slideUp { to { transform: translateY(0); } }
+
+  .hero h1 .accent {
+    color: var(--accent);
+    position: relative;
+  }
+
+  .hero h1 .italic {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent2);
+  }
+
+  .hero-sub {
+    margin-top: 2rem;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: var(--muted);
+    font-weight: 200;
+    text-align: center;
+    max-width: 520px;
+    line-height: 1.9;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 0.5s forwards;
+  }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  .hero-meta {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 2.5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.8s forwards;
+  }
+
+  .hero-meta-item {
+    text-align: center;
+  }
+
+  .hero-meta-item .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .hero-meta-item .lbl {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+
+  .scroll-line {
+    width: 1px; height: 36px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ===== Sections ===== */
+  section {
+    padding: 7rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-text {
+    font-size: 1.05rem;
+    line-height: 2;
+    color: var(--muted);
+    font-weight: 200;
+    max-width: 620px;
+  }
+
+  .divider {
+    width: 50px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+  }
+
+  /* ===== Anatomy Section ===== */
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3.5rem;
+    align-items: start;
+  }
+
+  .anatomy-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 360px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .anatomy-visual .big-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 14rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+    user-select: none;
+    transition: color 0.5s ease;
+  }
+
+  .anatomy-visual:hover .big-letter {
+    color: rgba(232,168,56,0.1);
+  }
+
+  .anatomy-annotations {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  .anno-point {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .anno-point::before {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    opacity: 0.4;
+    animation: ping 2s ease-in-out infinite;
+  }
+
+  @keyframes ping {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.6); opacity: 0; }
+  }
+
+  .anno-point:hover {
+    transform: scale(1.5);
+    box-shadow: 0 0 12px rgba(232,168,56,0.4);
+  }
+
+  .anno-point .anno-label {
+    position: absolute;
+    left: 18px; top: -6px;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .anno-point:hover .anno-label { opacity: 1; }
+
+  .anatomy-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .anatomy-item {
+    padding: 1.2rem 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: transform 0.3s, border-color 0.3s, background 0.3s;
+    cursor: default;
+  }
+
+  .anatomy-item:hover {
+    transform: translateX(6px);
+    border-color: rgba(232,168,56,0.2);
+    background: rgba(255,255,255,0.055);
+  }
+
+  .anatomy-item .term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .anatomy-item .def {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 200;
+  }
+
+  /* ===== Classification ===== */
+  .class-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .class-card {
+    padding: 2rem 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-align: center;
+    transition: transform 0.4s ease, border-color 0.4s, background 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .class-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+
+  .class-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(232,168,56,0.2);
+    background: rgba(255,255,255,0.055);
+  }
+
+  .class-card:hover::before { transform: scaleX(1); }
+
+  .class-card .specimen {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    color: var(--fg);
+    transition: color 0.3s;
+  }
+
+  .class-card:hover .specimen { color: var(--accent); }
+
+  .class-card .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .class-card .card-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 200;
+  }
+
+  /* ===== Type Scale ===== */
+  .scale-section { padding: 7rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+  .scale-row {
+    display: flex;
+    align-items: baseline;
+    gap: 2rem;
+    padding: 1.8rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s, padding-left 0.3s;
+    border-radius: 8px;
+  }
+
+  .scale-row:hover {
+    background: var(--card);
+    padding-left: 1.8rem;
+  }
+
+  .scale-row .scale-label {
+    flex-shrink: 0;
+    width: 110px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .scale-row .scale-sample {
+    font-family: 'Playfair Display', serif;
+    transition: color 0.3s;
+    display: inline-block;
+  }
+
+  .scale-row:hover .scale-sample { color: var(--accent); }
+
+  /* ===== Type Tester ===== */
+  .tester-box {
+    margin-top: 3rem;
+    padding: 3rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+  }
+
+  .tester-controls {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .control-group label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .control-group input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 160px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .control-group select {
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .control-group select:focus { border-color: var(--accent); }
+
+  .tester-output {
+    min-height: 160px;
+    padding: 1.5rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    line-height: 1.4;
+    word-break: break-word;
+    transition: font-size 0.2s ease, letter-spacing 0.2s ease, font-weight 0.15s ease;
+    outline: none;
+  }
+
+  .tester-output:focus {
+    border-color: rgba(232,168,56,0.3);
+  }
+
+  .tester-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    margin-top: 0.2rem;
+  }
+
+  /* ===== Quotes ===== */
+  .quote-section {
+    padding: 8rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .quote-section .bg-q {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 22rem;
+    color: rgba(255,255,255,0.015);
+    font-weight: 900;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.55;
+    max-width: 700px;
+    margin: 1.5rem auto;
+  }
+
+  .quote-author {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-top: 1.5rem;
+  }
+
+  /* ===== Timeline ===== */
+  .timeline {
+    margin-top: 3.5rem;
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border), transparent);
+  }
+
+  .timeline-item {
+    padding: 0 0 3rem 2rem;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.6s ease;
+  }
+
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem; top: 0.35rem;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    transform: translateX(-4px);
+    transition: background 0.3s;
+  }
+
+  .timeline-item:hover::before { background: var(--accent); }
+
+  .timeline-item .year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 0.35rem;
+  }
+
+  .timeline-item h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+
+  .timeline-item p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 200;
+    line-height: 1.75;
+  }
+
+  /* ===== Stats ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3.5rem;
+    text-align: center;
+  }
+
+  .stat-item {
+    padding: 2rem 1rem;
+    position: relative;
+  }
+
+  .stat-item::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 18%;
+    height: 64%; width: 1px;
+    background: var(--border);
+  }
+
+  .stat-item:last-child::after { display: none; }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ===== Character Table ===== */
+  .char-table {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 6px;
+  }
+
+  .char-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--fg);
+    cursor: default;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .char-cell:hover {
+    background: rgba(232,168,56,0.08);
+    border-color: rgba(232,168,56,0.25);
+    color: var(--accent);
+    transform: scale(1.12);
+    z-index: 2;
+  }
+
+  .char-cell .char-name {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--accent);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .char-cell:hover .char-name { opacity: 1; }
+
+  /* ===== Footer ===== */
+  footer {
+    padding: 4rem 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  footer .footer-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  footer .footer-text .dot {
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    vertical-align: middle;
+    margin: 0 0.8rem;
+  }
+
+  /* ===== Reveal Animation ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .anatomy-grid { grid-template-columns: 1fr; }
+    .class-cards { grid-template-columns: repeat(2, 1fr); }
+    .stats { grid-template-columns: 1fr; }
+    .stat-item::after { display: none; }
+    nav .nav-links { gap: 1.2rem; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.5rem; }
+    nav .nav-links { display: none; }
+    .class-cards { grid-template-columns: 1fr; }
+    section { padding: 5rem 1.5rem; }
+    .scale-row { flex-direction: column; gap: 0.4rem; }
+    .scale-row .scale-label { width: auto; }
+    .tester-controls { gap: 1rem; }
+    .control-group input[type="range"] { width: 120px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    .floating-letters { display: none; }
+  }
+</style>
 </head>
 <body>
-    <!-- Header & Navigation -->
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <div class="logo-icon"><i class="fas fa-bezier-curve"></i></div>
-                    <div class="logo-text">Code<span>Flow</span></div>
-                </div>
-                
-                <ul class="nav-links">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#benefits">Benefits</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                    <li><a href="#">Resources</a></li>
-                </ul>
-                
-                <button class="cta-button">Start Free Trial</button>
-                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>Build Apps Faster With <span>Visual Development</span></h1>
-                    <p>CodeFlow empowers teams to create enterprise-grade applications with minimal coding. Drag, drop, and connect components to build powerful web and mobile apps in record time.</p>
-                    <div class="hero-buttons">
-                        <button class="cta-button">Start Building Free</button>
-                        <button class="secondary-button">Watch Demo</button>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="CodeFlow Platform Interface">
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Cursor Glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Powerful Features for Rapid Development</h2>
-                <p>CodeFlow provides all the tools you need to build, deploy, and scale applications without writing extensive code.</p>
-            </div>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-th-large"></i>
-                    </div>
-                    <h3>Visual Builder</h3>
-                    <p>Drag and drop UI components to design responsive interfaces. Connect data sources with simple point-and-click actions.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3>Database Integration</h3>
-                    <p>Connect to any data source with built-in connectors. Automatically generate CRUD operations without writing SQL.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Cross-Platform</h3>
-                    <p>Build once, deploy everywhere. Generate applications for web, iOS, and Android from a single visual design.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3>Extensible with Code</h3>
-                    <p>Add custom functionality with JavaScript when needed. Our platform doesn't limit your creativity or complexity.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Enterprise Security</h3>
-                    <p>Built-in authentication, authorization, and data encryption. SOC2 compliant with enterprise-grade security features.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h3>One-Click Deployment</h3>
-                    <p>Deploy to cloud or on-premises with a single click. Automatic scaling and monitoring included.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Floating Letters -->
+<div class="floating-letters" id="floatingLetters"></div>
 
-    <!-- Benefits Section -->
-    <section class="benefits" id="benefits">
-        <div class="container">
-            <div class="section-title">
-                <h2>Why Choose CodeFlow?</h2>
-                <p>Join thousands of companies accelerating their digital transformation with low-code development.</p>
-            </div>
-            
-            <div class="benefits-grid">
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>10x Faster Development</h3>
-                    <p>Build applications in days instead of months with visual development tools.</p>
-                </div>
-                
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <h3>Reduce Costs by 70%</h3>
-                    <p>Lower development and maintenance costs with fewer resources required.</p>
-                </div>
-                
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Citizen Developers</h3>
-                    <p>Enable business users to build solutions with minimal IT assistance.</p>
-                </div>
-                
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Scale Effortlessly</h3>
-                    <p>From prototype to enterprise-scale applications with the same platform.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Navigation -->
+<nav id="mainNav">
+  <div class="logo">TYPE<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#anatomy">Anatomy</a></li>
+    <li><a href="#classify">Classify</a></li>
+    <li><a href="#scale">Scale</a></li>
+    <li><a href="#tester">Tester</a></li>
+    <li><a href="#history">History</a></li>
+  </ul>
+</nav>
 
-    <!-- Testimonials -->
-    <section class="testimonials" id="testimonials">
-        <div class="container">
-            <div class="section-title">
-                <h2>Trusted by Industry Leaders</h2>
-                <p>See what our customers have to say about their experience with CodeFlow.</p>
-            </div>
-            
-            <div class="testimonial-slider">
-                <div class="testimonial">
-                    <div class="testimonial-text">
-                        "CodeFlow transformed how we deliver solutions to our business units. What used to take 6 months now takes 3 weeks. Our development team can focus on complex problems while business teams build their own solutions."
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">SC</div>
-                        <div class="author-info">
-                            <h4>Sarah Chen</h4>
-                            <p>CTO, TechGrowth Inc.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-watermark">TYPE</div>
+  <h1>
+    <span class="line"><span>Typography</span></span>
+    <span class="line"><span>is the <span class="italic">voice</span></span></span>
+    <span class="line"><span>of <span class="accent">design</span></span></span>
+  </h1>
+  <p class="hero-sub">Every letterform carries centuries of craft. Every curve, every counter, every serif tells a story. This is a journey through the art and science of type.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <div class="val">1440</div>
+      <div class="lbl">Movable Type</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="val">500K+</div>
+      <div class="lbl">Digital Fonts</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="val">26</div>
+      <div class="lbl">Letters</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
 
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <div class="section-title">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>Choose the plan that fits your needs. All plans include core features with no hidden fees.</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3 class="plan-name">Starter</h3>
-                    <div class="plan-price">$29<span>/month</span></div>
-                    <ul class="plan-features">
-                        <li>Up to 5 users</li>
-                        <li>10 GB storage</li>
-                        <li>Basic components</li>
-                        <li>Community support</li>
-                        <li>1 production app</li>
-                    </ul>
-                    <button class="secondary-button">Get Started</button>
-                </div>
-                
-                <div class="pricing-card featured">
-                    <div class="featured-badge">Most Popular</div>
-                    <h3 class="plan-name">Professional</h3>
-                    <div class="plan-price">$89<span>/month</span></div>
-                    <ul class="plan-features">
-                        <li>Up to 25 users</li>
-                        <li>100 GB storage</li>
-                        <li>All components</li>
-                        <li>Priority support</li>
-                        <li>10 production apps</li>
-                        <li>Custom branding</li>
-                    </ul>
-                    <button class="cta-button">Try Free for 14 Days</button>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3 class="plan-name">Enterprise</h3>
-                    <div class="plan-price">Custom</div>
-                    <ul class="plan-features">
-                        <li>Unlimited users</li>
-                        <li>Unlimited storage</li>
-                        <li>All features included</li>
-                        <li>24/7 dedicated support</li>
-                        <li>Unlimited apps</li>
-                        <li>On-premises option</li>
-                    </ul>
-                    <button class="secondary-button">Contact Sales</button>
-                </div>
-            </div>
+<!-- Anatomy of Type -->
+<section id="anatomy">
+  <div class="reveal">
+    <div class="section-label">01 — Anatomy</div>
+    <div class="section-title">The bones beneath<br>the letterform</div>
+    <div class="section-text">Every character is an architecture of precise parts. Understanding these parts is the first step to truly seeing type — not just reading it.</div>
+  </div>
+  <div class="anatomy-grid">
+    <div class="anatomy-visual reveal">
+      <div class="big-letter">R</div>
+      <div class="anatomy-annotations">
+        <div class="anno-point" style="top:8%;left:52%;">
+          <span class="anno-label">Apex</span>
         </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Start Building Today</h2>
-            <p>Join over 10,000 companies that use CodeFlow to accelerate their application development. No credit card required for the free trial.</p>
-            <button class="cta-button">Get Started for Free</button>
+        <div class="anno-point" style="top:22%;left:30%;">
+          <span class="anno-label">Stem</span>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <div class="logo">
-                        <div class="logo-icon"><i class="fas fa-bezier-curve"></i></div>
-                        <div class="logo-text">Code<span>Flow</span></div>
-                    </div>
-                    <p style="margin-top: 20px; color: #aaa;">The leading visual development platform for building enterprise applications with minimal coding.</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Product</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Features</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Use Cases</a></li>
-                        <li><a href="#">Integrations</a></li>
-                        <li><a href="#">Roadmap</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Resources</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Tutorials</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Community</a></li>
-                        <li><a href="#">Support</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Company</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="copyright">
-                <p>&copy; 2023 CodeFlow. All rights reserved.</p>
-            </div>
+        <div class="anno-point" style="top:35%;left:62%;">
+          <span class="anno-label">Bowl</span>
         </div>
-    </footer>
+        <div class="anno-point" style="top:42%;left:72%;">
+          <span class="anno-label">Counter</span>
+        </div>
+        <div class="anno-point" style="top:58%;left:54%;">
+          <span class="anno-label">Shoulder</span>
+        </div>
+        <div class="anno-point" style="top:72%;left:68%;">
+          <span class="anno-label">Leg</span>
+        </div>
+        <div class="anno-point" style="top:92%;left:28%;">
+          <span class="anno-label">Serif</span>
+        </div>
+      </div>
+    </div>
+    <div class="anatomy-list reveal">
+      <div class="anatomy-item">
+        <div class="term">Stem</div>
+        <div class="def">The primary vertical stroke of a letter. The backbone that carries the weight.</div>
+      </div>
+      <div class="anatomy-item">
+        <div class="term">Bowl</div>
+        <div class="def">The curved stroke that encloses a counter. Found in b, d, g, p, q, R.</div>
+      </div>
+      <div class="anatomy-item">
+        <div class="term">Counter</div>
+        <div class="def">The enclosed or partially enclosed space within a letter. What isn't drawn matters as much as what is.</div>
+      </div>
+      <div class="anatomy-item">
+        <div class="term">Serif</div>
+        <div class="def">The small extension at the end of a stroke. A thousand-year-old detail that guides the eye along lines of text.</div>
+      </div>
+      <div class="anatomy-item">
+        <div class="term">Apex</div>
+        <div class="def">The pointed top of a letter where two strokes meet. Precision at the peak.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        // Mobile menu toggle
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            
-            // Adjust for mobile
-            if (window.innerWidth <= 768) {
-                if (navLinks.style.display === 'flex') {
-                    navLinks.style.flexDirection = 'column';
-                    navLinks.style.position = 'absolute';
-                    navLinks.style.top = '80px';
-                    navLinks.style.left = '0';
-                    navLinks.style.width = '100%';
-                    navLinks.style.backgroundColor = 'white';
-                    navLinks.style.padding = '20px';
-                    navLinks.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
-                    
-                    const navItems = document.querySelectorAll('.nav-links li');
-                    navItems.forEach(item => {
-                        item.style.margin = '10px 0';
-                    });
-                }
-            }
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Close mobile menu if open
-                    if(window.innerWidth <= 768) {
-                        document.querySelector('.nav-links').style.display = 'none';
-                    }
-                }
-            });
-        });
-        
-        // Simple testimonial slider
-        const testimonials = [
-            {
-                text: "CodeFlow transformed how we deliver solutions to our business units. What used to take 6 months now takes 3 weeks. Our development team can focus on complex problems while business teams build their own solutions.",
-                name: "Sarah Chen",
-                position: "CTO, TechGrowth Inc.",
-                initials: "SC"
-            },
-            {
-                text: "We reduced our app development time by 80% using CodeFlow. The visual interface made it easy for our analysts to build data dashboards without waiting for IT resources.",
-                name: "Marcus Johnson",
-                position: "Director of Operations, DataCorp",
-                initials: "MJ"
-            },
-            {
-                text: "As a non-technical founder, CodeFlow allowed me to build our MVP in just 2 months. I could test ideas quickly and iterate based on user feedback without deep coding knowledge.",
-                name: "Lisa Wang",
-                position: "Founder, StartupLabs",
-                initials: "LW"
-            }
-        ];
-        
-        let currentTestimonial = 0;
-        const testimonialElement = document.querySelector('.testimonial');
-        
-        function rotateTestimonial() {
-            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
-            updateTestimonial();
-        }
-        
-        function updateTestimonial() {
-            const testimonial = testimonials[currentTestimonial];
-            testimonialElement.innerHTML = `
-                <div class="testimonial-text">"${testimonial.text}"</div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">${testimonial.initials}</div>
-                    <div class="author-info">
-                        <h4>${testimonial.name}</h4>
-                        <p>${testimonial.position}</p>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Auto-rotate testimonials every 5 seconds
-        setInterval(rotateTestimonial, 5000);
-        
-        // CTA button interactions
-        document.querySelectorAll('.cta-button').forEach(button => {
-            button.addEventListener('click', function() {
-                alert('Thank you for your interest in CodeFlow! You would be redirected to the signup page in a real implementation.');
-            });
-        });
-        
-        // Pricing card interactions
-        document.querySelectorAll('.pricing-card button').forEach(button => {
-            button.addEventListener('click', function() {
-                const planName = this.closest('.pricing-card').querySelector('.plan-name').textContent;
-                alert(`You selected the ${planName} plan. In a real implementation, you would be redirected to the checkout process.`);
-            });
-        });
-    </script>
+<!-- Classification -->
+<section id="classify">
+  <div class="reveal">
+    <div class="section-label">02 — Classification</div>
+    <div class="section-title">Families of form</div>
+    <div class="section-text">Typefaces are grouped by shared structural DNA. Each class emerged from a distinct era, technology, and philosophy of communication.</div>
+  </div>
+  <div class="class-cards">
+    <div class="class-card reveal">
+      <div class="specimen" style="font-family:'Playfair Display',serif;">Ag</div>
+      <div class="card-title">Serif</div>
+      <div class="card-desc">Born from stone carving and roman inscriptional lettering. Serifs guide the eye horizontally, making long-form reading effortless.</div>
+    </div>
+    <div class="class-card reveal">
+      <div class="specimen" style="font-family:'Source Serif 4',sans-serif;font-weight:200;">Ag</div>
+      <div class="card-title">Sans-Serif</div>
+      <div class="card-desc">Stripped of ornament. The 20th century's answer to industrial clarity — neutral, universal, and endlessly adaptable.</div>
+    </div>
+    <div class="class-card reveal">
+      <div class="specimen" style="font-family:'JetBrains Mono',monospace;">Ag</div>
+      <div class="card-title">Monospace</div>
+      <div class="card-desc">Every character claims equal horizontal space. Built for typewriters, beloved by programmers — alignment by definition.</div>
+    </div>
+    <div class="class-card reveal">
+      <div class="specimen" style="font-family:'Playfair Display',serif;font-style:italic;">Ag</div>
+      <div class="card-title">Display</div>
+      <div class="card-desc">Designed for impact at large sizes. Expressive, dramatic, and unapologetic — the attention-seekers of the type world.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Type Scale -->
+<section id="scale" class="scale-section">
+  <div class="reveal">
+    <div class="section-label">03 — Scale</div>
+    <div class="section-title">Hierarchy through size</div>
+    <div class="section-text">A typographic scale creates rhythm, directs attention, and establishes the order of information — all without a single line or box.</div>
+  </div>
+  <div class="scale-row reveal">
+    <span class="scale-label">Display / 72px</span>
+    <span class="scale-sample" style="font-size:4.5rem;font-weight:900;line-height:1;">Typography</span>
+  </div>
+  <div class="scale-row reveal">
+    <span class="scale-label">H1 / 48px</span>
+    <span class="scale-sample" style="font-size:3rem;font-weight:900;line-height:1.1;">Letters define</span>
+  </div>
+  <div class="scale-row reveal">
+    <span class="scale-label">H2 / 32px</span>
+    <span class="scale-sample" style="font-size:2rem;font-weight:700;line-height:1.2;">the visual voice</span>
+  </div>
+  <div class="scale-row reveal">
+    <span class="scale-label">H3 / 24px</span>
+    <span class="scale-sample" style="font-size:1.5rem;font-weight:700;line-height:1.3;">of every message</span>
+  </div>
+  <div class="scale-row reveal">
+    <span class="scale-label">Body / 16px</span>
+    <span class="scale-sample" style="font-size:1rem;font-weight:400;line-height:1.6;">Good typography is invisible. It serves the reader, not the designer. When the eye glides effortlessly across the page, the type has done its job.</span>
+  </div>
+  <div class="scale-row reveal">
+    <span class="scale-label">Caption / 12px</span>
+    <span class="scale-sample" style="font-size:0.75rem;font-weight:200;line-height:1.8;color:var(--muted);">The details are not the details. They make the design. — Charles Eames</span>
+  </div>
+</section>
+
+<!-- Stats -->
+<section>
+  <div class="reveal">
+    <div class="divider"></div>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-num" data-target="550">0</div>
+        <div class="stat-label">Years of Type History</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="300">0</div>
+        <div class="stat-label">Classifications in Vox</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="95">0</div>
+        <div class="stat-label">% Web Using 5 Fonts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Type Tester -->
+<section id="tester">
+  <div class="reveal">
+    <div class="section-label">04 — Playground</div>
+    <div class="section-title">Test the type</div>
+    <div class="section-text">Adjust weight, size, and spacing in real time. Edit the text below to see how different settings shape the reading experience.</div>
+  </div>
+  <div class="tester-box reveal">
+    <div class="tester-controls">
+      <div class="control-group">
+        <label>Weight</label>
+        <input type="range" id="weightSlider" min="100" max="900" step="100" value="400">
+        <div class="tester-val" id="weightVal">400</div>
+      </div>
+      <div class="control-group">
+        <label>Size</label>
+        <input type="range" id="sizeSlider" min="12" max="96" step="1" value="28">
+        <div class="tester-val" id="sizeVal">28px</div>
+      </div>
+      <div class="control-group">
+        <label>Spacing</label>
+        <input type="range" id="spacingSlider" min="-5" max="20" step="0.5" value="0">
+        <div class="tester-val" id="spacingVal">0px</div>
+      </div>
+      <div class="control-group">
+        <label>Family</label>
+        <select id="familySelect">
+          <option value="'Playfair Display', serif">Playfair Display</option>
+          <option value="'Source Serif 4', serif">Source Serif 4</option>
+          <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+          <option value="Georgia, serif">Georgia</option>
+        </select>
+      </div>
+    </div>
+    <div class="tester-output" id="testerOutput" contenteditable="true">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump.</div>
+  </div>
+</section>
+
+<!-- Character Table -->
+<section>
+  <div class="reveal">
+    <div class="section-label">05 — Specimen</div>
+    <div class="section-title">The alphabet, examined</div>
+    <div class="section-text">Each glyph is a microcosm of design decisions. Hover to isolate. The 26 letters that built civilization.</div>
+  </div>
+  <div class="char-table reveal" id="charTable"></div>
+</section>
+
+<!-- Quote -->
+<section class="quote-section">
+  <div class="bg-q">&</div>
+  <div class="reveal">
+    <div class="quote-mark">&ldquo;</div>
+    <div class="quote-text">Typography is what language looks like.</div>
+    <div class="quote-author">— Ellen Lupton</div>
+  </div>
+</section>
+
+<!-- History Timeline -->
+<section id="history">
+  <div class="reveal">
+    <div class="section-label">06 — History</div>
+    <div class="section-title">From chisel to pixel</div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="year">c. 1440</div>
+      <h4>Gutenberg's Movable Type</h4>
+      <p> Johannes Gutenberg cast individual metal letters that could be arranged, inked, and pressed onto paper. The printing press democratized knowledge and gave birth to typographic craft as we know it.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">c. 1470</div>
+      <h4>Jenson's Roman Type</h4>
+      <p>Nicolas Jenson cut a typeface in Venice that abandoned the heavy Gothic blackletter for lighter, more open roman forms. It became the model for centuries of serif design.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1757</div>
+      <h4>Baskerville's Precision</div>
+      <p>John Baskerville pushed type into sharper contrast between thick and thin strokes, using glossy paper and heated copper plates. His work bridged old-style and modern type.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1896</div>
+      <h4>Akzidenz-Grotesk</h4>
+      <p>Berthold's sans-serif typeface stripped away serifs with industrial efficiency. It predated Helvetica by decades and established the visual language of modernism.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1957</div>
+      <h4>Helvetica</h4>
+      <p>Max Miedinger designed Neue Haas Grotesk, later renamed Helvetica. It became the most ubiquitous typeface on Earth — from subway signs to corporate logos to tax forms.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1996</div>
+      <h4>CSS Font Control</h4>
+      <p>The CSS1 specification gave web designers basic font-family, size, and weight control. Typography left the page and entered the browser — though with only a handful of "web-safe" fonts.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2010</div>
+      <h4>Google Fonts Launch</h4>
+      <p>Free, open-source web fonts exploded onto the internet. Suddenly, anyone could use professionally designed typefaces — 900+ families and counting — without licensing friction.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2020s</div>
+      <h4>Variable Fonts</h4>
+      <p>A single font file containing an entire design space — weight, width, optical size all on continuous axes. The most significant technical leap since OpenType, enabling responsive typography.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p class="footer-text">
+    TYPE<span class="dot"></span>A celebration of letterforms<span class="dot"></span>MMXXV
+  </p>
+</footer>
+
+<script>
+  // ===== Cursor Glow =====
+  const cursorGlow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', (e) => {
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top = e.clientY + 'px';
+  });
+
+  // ===== Floating Letters =====
+  const floatingLetters = document.getElementById('floatingLetters');
+  const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ&@!?0123456789';
+
+  function createFloatingLetter() {
+    const el = document.createElement('span');
+    el.classList.add('floating-letter');
+    el.textContent = charSet[Math.floor(Math.random() * charSet.length)];
+    const size = 18 + Math.random() * 50;
+    el.style.fontSize = size + 'px';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.animationDuration = (18 + Math.random() * 28) + 's';
+    el.style.animationDelay = Math.random() * 6 + 's';
+    floatingLetters.appendChild(el);
+    el.addEventListener('animationend', () => {
+      el.remove();
+      createFloatingLetter();
+    });
+  }
+  for (let i = 0; i < 14; i++) createFloatingLetter();
+
+  // ===== Scroll Reveal =====
+  const revealEls = document.querySelectorAll('.reveal');
+  const timelineItems = document.querySelectorAll('.timeline-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(el => observer.observe(el));
+  timelineItems.forEach(el => observer.observe(el));
+
+  // ===== Nav Hide/Show =====
+  let lastScrollY = 0;
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    nav.style.transform = (y > lastScrollY && y > 80) ? 'translateY(-100%)' : 'translateY(0)';
+    lastScrollY = y;
+  });
+
+  // ===== Counter Animation =====
+  const statNums = document.querySelectorAll('.stat-num[data-target]');
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      const duration = 2200;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(eased * target).toLocaleString();
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = target.toLocaleString();
+      }
+      requestAnimationFrame(tick);
+      statObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  statNums.forEach(el => statObserver.observe(el));
+
+  // ===== Type Tester =====
+  const weightSlider = document.getElementById('weightSlider');
+  const sizeSlider = document.getElementById('sizeSlider');
+  const spacingSlider = document.getElementById('spacingSlider');
+  const familySelect = document.getElementById('familySelect');
+  const output = document.getElementById('testerOutput');
+  const weightVal = document.getElementById('weightVal');
+  const sizeVal = document.getElementById('sizeVal');
+  const spacingVal = document.getElementById('spacingVal');
+
+  function updateTester() {
+    output.style.fontWeight = weightSlider.value;
+    output.style.fontSize = sizeSlider.value + 'px';
+    output.style.letterSpacing = spacingSlider.value + 'px';
+    output.style.fontFamily = familySelect.value;
+    weightVal.textContent = weightSlider.value;
+    sizeVal.textContent = sizeSlider.value + 'px';
+    spacingVal.textContent = spacingSlider.value + 'px';
+  }
+
+  weightSlider.addEventListener('input', updateTester);
+  sizeSlider.addEventListener('input', updateTester);
+  spacingSlider.addEventListener('input', updateTester);
+  familySelect.addEventListener('change', updateTester);
+
+  // ===== Character Table =====
+  const charTable = document.getElementById('charTable');
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&@!?.,:;'.split('');
+  const charNames = {
+    'A':'Uppercase A','a':'Lowercase a','B':'Uppercase B','b':'Lowercase b',
+    'C':'Uppercase C','c':'Lowercase c','D':'Uppercase D','d':'Lowercase d',
+    'E':'Uppercase E','e':'Lowercase e','F':'Uppercase F','f':'Lowercase f',
+    'G':'Uppercase G','g':'Lowercase g','H':'Uppercase H','h':'Lowercase h',
+    'I':'Uppercase I','i':'Lowercase i','J':'Uppercase J','j':'Lowercase j',
+    'K':'Uppercase K','k':'Lowercase k','L':'Uppercase L','l':'Lowercase l',
+    'M':'Uppercase M','m':'Lowercase m','N':'Uppercase N','n':'Lowercase n',
+    'O':'Uppercase O','o':'Lowercase o','P':'Uppercase P','p':'Lowercase p',
+    'Q':'Uppercase Q','q':'Lowercase q','R':'Uppercase R','r':'Lowercase r',
+    'S':'Uppercase S','s':'Lowercase s','T':'Uppercase T','t':'Lowercase t',
+    'U':'Uppercase U','u':'Lowercase u','V':'Uppercase V','v':'Lowercase v',
+    'W':'Uppercase W','w':'Lowercase w','X':'Uppercase X','x':'Lowercase x',
+    'Y':'Uppercase Y','y':'Lowercase y','Z':'Uppercase Z','z':'Lowercase z',
+    '0':'Digit Zero','1':'Digit One','2':'Digit Two','3':'Digit Three',
+    '4':'Digit Four','5':'Digit Five','6':'Digit Six','7':'Digit Seven',
+    '8':'Digit Eight','9':'Digit Nine','&':'Ampersand','@':'At Sign',
+    '!':'Exclamation','?':'Question Mark','.':'Period',',':'Comma',
+    ':':'Colon',';':'Semicolon'
+  };
+
+  alphabet.forEach(ch => {
+    const cell = document.createElement('div');
+    cell.classList.add('char-cell');
+    cell.textContent = ch;
+    const nameEl = document.createElement('span');
+    nameEl.classList.add('char-name');
+    nameEl.textContent = charNames[ch] || ch;
+    cell.appendChild(nameEl);
+    charTable.appendChild(cell);
+  });
+
+  // ===== Smooth Anchor Scroll =====
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const t = document.querySelector(link.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
 </body>
 </html>
