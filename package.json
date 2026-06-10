@@ -1,9 +1,9 @@
 {
-  "name": "nodejs-argo",
+  "name": "nodejs",
   "version": "1,0,0",
   "description": "Thsi is a node project",
   "main": "index.js",
-  "author": "eooce",
+  "author": "",
   "repository": "",
   "license": "MIT",
   "private": false,
@@ -12,8 +12,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "axios": "latest",
-    "express": "^4.18.2"
+    "axios": "latest"
   },
   "engines": {
     "node": ">=14"
