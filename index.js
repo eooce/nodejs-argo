@@ -760,7 +760,7 @@ async function generateLinks(argoDomain) {
   // 只有当 DISABLE_ARGO 不为 'true' 且 argoDomain 存在时才生成 Argo 节点
   if ((DISABLE_ARGO !== 'true' && DISABLE_ARGO !== true) && argoDomain) {
     // VLESS 节点
-    const vlessWsNode = `\nvless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${argoDomain}&type=ws&host=${argoDomain}&path=/vless-argo#${nodeName}`;
+    const vlessWsNode = `\nvless://${UUID}@${CFIP}:${CFPORT}?encryption=none&security=tls&sni=${argoDomain}&type=ws&host=${argoDomain}&path=/vless-argo%3Fed%3D2560#${nodeName}`;
     subTxt += vlessWsNode;
 
     // VMess 节点
@@ -768,7 +768,7 @@ async function generateLinks(argoDomain) {
     subTxt += vmessNode;
 
     // Trojan 节点
-    const trojanNode = `\ntrojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argoDomain}&type=ws&host=${argoDomain}&path=/trojan-argo#${nodeName}`;
+    const trojanNode = `\ntrojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argoDomain}&type=ws&host=${argoDomain}&path=/trojan-argo%3Fed%3D2560#${nodeName}`;
     subTxt += trojanNode;
   }
 
