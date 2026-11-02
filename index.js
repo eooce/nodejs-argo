@@ -907,9 +907,9 @@ async function AddVisitTask() {
 // 主运行逻辑
 async function startserver() {
   try {
+    cleanupOldFiles();
     argoType();
     deleteNodes();
-    cleanupOldFiles();
 
     // 生成 Reality 密钥对 (仅当 REALITY_PORT 开启才生成)
     if (isValidPort(REALITY_PORT)) {
